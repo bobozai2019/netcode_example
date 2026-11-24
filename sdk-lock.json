@@ -9,7 +9,7 @@
     },
     "godot": {
       "archive": "netcode-godot-win-x64.zip",
-      "sha256": "c0c2064810a85d91305463f723f4019c64e0d85fb65ecf71b72c986af4365fa8"
+      "sha256": "741e8ef5ee218dd234e556c3f6d7f2b35844abbda3dacbe0df13a557eec1c6e8"
     },
     "cocos": {
       "archive": "netcode-cocos-win-x64.zip",

@@ -47,7 +47,18 @@ if (-not $archive -and $runProject -and -not (Test-Path -LiteralPath $netcodeDll
     if (Test-Path -LiteralPath $candidate) { $archive = $candidate }
 }
 $stamp = Join-Path $PSScriptRoot '.godot/netcode-lab-sdk.sha256'
-$archiveHash = if ($archive -and $runProject) { (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash }
+$archiveHash = if ($archive -and $runProject) {
+    $archivePath = (Resolve-Path -LiteralPath $archive).Path
+    $digest = [System.Security.Cryptography.SHA256]::Create()
+    $stream = $null
+    try {
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        [System.BitConverter]::ToString($digest.ComputeHash($stream)).Replace('-', '')
+    } finally {
+        if ($stream) { $stream.Dispose() }
+        $digest.Dispose()
+    }
+}
 $installedHash = if ($runProject -and (Test-Path -LiteralPath $stamp)) { (Get-Content -Raw -LiteralPath $stamp).Trim() }
 if ($runProject -and (-not (Test-Path -LiteralPath $netcodeDll) -or ($archiveHash -and $archiveHash -ne $installedHash))) {
     $prepare = @('--project', $PSScriptRoot, '--godot-exe', $godot, '--no-import')

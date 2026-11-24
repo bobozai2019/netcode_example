@@ -34,13 +34,22 @@ Fusion 在确认仿真时钟启动后分批生成对象，客端收齐初始对�
 
 在任一玩家窗口按 **WASD** 或方向键移动自己的圆环。两种后端使用同一份场景、八个属性和 32／64／128／512／1024 对象档。玩家各自每秒写入 10 次。开局约 5 秒后，房主按每个小球 10 Hz 分帧轮转写入。512 档一圈约 0.1 秒，目标总写入速率约 5,100 次/秒。客端实际接收频率见 `-Trace` 日志。浮点及向量输入统一使用 0.01 步长。房主可以暂停负载，或在全部、AOI 1 和 AOI 2 间切换客人可见范围。32、64、512 档的客端切到单组时，分别显示 28、44、268 个对象，包含全局对象。
 
-顶部显示当前后端的可见副本数、FPS、固定步率、RTT 和状态年龄 P95。Netcode 还显示 TCP 队列字节。跨机器比较状态年龄需要两端对齐系统时钟。默认 Netcode 跑本机 TCP，Fusion 经 Cloud，链路延迟不同。比较同步处理成本时应同时记录后端、引擎版本、对象数及链路设置。
+顶部显示当前后端的可见副本数、FPS、固定步率、RTT 和状态年龄 P95。Netcode 还显示 TCP 队列字节。跨机器比较状态年龄需要两端对齐系统时钟。Netcode 默认走本机 TCP。Fusion 工程默认使用 Local，显式选择 Cloud 才经由 Photon Cloud。比较同步处理成本时应同时记录后端、引擎版本、对象数及链路设置。
 
 日常双开默认用 128 档。此前限速配置的 Windows 双端验证覆盖八字段、AOI 切换及持续更新。Fusion Cloud 的 512 档在高负载下曾发生批量更新滞后。加上 `-DemoCheck -CaptureDir <目录>` 可记录双端画面、校验日志和更新年龄。
+
+在示例仓库根目录运行以下命令，可用真实窗口验证 Netcode 的 512 档。输出包含全量负载期间双端的帧率、P95 帧间隔、绘制调用数，以及八字段和 AOI 断言结果。
+
+三个 Netcode 小球模板共用的 `netcode_orb_config.tres` 已启用 `apply_proxy_changes_only`。客端按已接收的网络状态回写变化字段。`--require-proxy-changes` 会检查实际绑定的模板采用了该路径。把资源选项改为 `false` 后，用省略该参数的命令对照逐步采样和本地纠偏模式。
+
+```powershell
+python -B tools/verify_sync_lab.py 512 --sdk sync-lab/addons/netcode --seconds 42 --windowed --require-proxy-changes
+```
 
 ## 同步日志
 
 用 `launch.bat -Backend Fusion -Objects 512 -Trace` 双开并记录。启动终端会显示日志目录，也可通过 `-CaptureDir` 指定。
 
-- `host.log` 和 `guest.log` 的 `SYNC_LAB_TRACE` 行约每秒记录一次。`load_writes` 是本端批量写入次数，`remote_groups.*.advanced` 是这一间隔内版本推进的已有对象数，`new_instances` 单独记录新出现的实例。
+- `host.log` 和 `guest.log` 的 `SYNC_LAB_TRACE` 行约每秒记录一次。`fps` 和 `frame_p95_ms` 取自同一采样窗内相邻处理帧的墙钟间隔，`draw_calls` 为采样时的 Godot 绘制调用监视值。`load_writes` 是本端批量写入次数，`remote_groups.*.advanced` 是这一间隔内版本推进的已有对象数，`new_instances` 单独记录新出现的实例。
+- Netcode 的 `proxy_changes_only` 来自当前实际绑定的小球模板。`true` 表示已启用，`false` 表示关闭。`null` 表示模板尚未绑定或 SDK 缺少模式查询。
 - `host-fusion.jsonl` 和 `guest-fusion.jsonl` 记录 Fusion 调试器报告的对象发送、接收字节率，按所有者汇总，并按对象编号保留若干样本。两类日志的 `unix_ms` 可用于同机对时。Fusion 的队列深度未在这份调试输出中提供，因此应用日志里的 `queued_bytes` 为 `null`。

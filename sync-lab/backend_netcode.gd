@@ -130,7 +130,19 @@ func set_area(next: int) -> bool:
 	return _host and room != null and room.set_property("lab-area", next)
 
 func trace_state() -> Dictionary:
-	return {"network_time_s": Netcode.get_network_time(), "aoi": _area, "spawned_local": _owned}
+	return {"network_time_s": Netcode.get_network_time(), "aoi": _area, "spawned_local": _owned,
+		"proxy_changes_only": _uses_proxy_changes_only()}
+
+func _uses_proxy_changes_only() -> Variant:
+	if not visible(0): return null
+	for i in [0, Orb.GLOBAL_COUNT, Orb.GLOBAL_COUNT + 1]:
+		if not visible(i): continue
+		var sync := orbs[i].get_node_or_null("Sync")
+		if sync == null: return false
+		if not sync.has_method(&"is_proxy_changes_only_enabled"): return null
+		if not sync.call(&"is_proxy_changes_only_enabled"):
+			return false
+	return true
 
 func close() -> void:
 	var opened := _open

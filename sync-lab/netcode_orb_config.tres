@@ -3,3 +3,4 @@
 [resource]
 properties = Array[NodePath]([NodePath(":version"), NodePath(":energy"), NodePath(":active"), NodePath(":label"), NodePath(":offset"), NodePath(":trail"), NodePath(":tags"), NodePath(":sent_at")])
 limits = {NodePath(":trail"): 4, NodePath(":tags"): 4}
+apply_proxy_changes_only = true

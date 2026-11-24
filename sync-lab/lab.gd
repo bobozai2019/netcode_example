@@ -18,9 +18,39 @@ const TEXT := Color("e9f3f7")
 const MUTED := Color("a2b8c8")
 
 class Arena extends Control:
+	const CIRCLE_SIDES := 24
+	const INSTANCE_FLOATS := 12
+
 	var objects: Array[Orb] = []
 	var configured := DEFAULT_OBJECT_COUNT
 	var backend: Node
+	var _circles: MultiMesh
+	var _instances := PackedFloat32Array()
+	var _circle_count := 0
+
+	func _ready() -> void:
+		var vertices := PackedVector2Array([Vector2.ZERO])
+		var indices := PackedInt32Array()
+		for side in CIRCLE_SIDES:
+			vertices.append(Vector2.from_angle(TAU * side / CIRCLE_SIDES))
+			indices.append(0)
+			indices.append(side + 1)
+			indices.append((side + 1) % CIRCLE_SIDES + 1)
+		var arrays := []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = vertices
+		arrays[Mesh.ARRAY_INDEX] = indices
+		var mesh := ArrayMesh.new()
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		_circles = MultiMesh.new()
+		_circles.transform_format = MultiMesh.TRANSFORM_2D
+		_circles.use_colors = true
+		_circles.mesh = mesh
+		resized.connect(_resize_circle_bounds)
+		_resize_circle_bounds()
+
+	func _resize_circle_bounds() -> void:
+		_circles.custom_aabb = AABB(Vector3(-16.0, -16.0, -1.0), Vector3(size.x + 32.0, size.y + 32.0, 2.0))
 
 	func _draw() -> void:
 		var bounds := Rect2(1, 1, size.x - 2, size.y - 2)
@@ -38,9 +68,16 @@ class Arena extends Control:
 		_lane(right, "AOI 2", GOLD)
 		var cols := mini(12 if configured <= 512 else 17, ceili((configured - GLOBAL_COUNT) / 2.0))
 		var rows := ceili(float(configured - GLOBAL_COUNT) / (2 * cols))
-		for i in objects.size():
+		var stride := Vector2((lane_width - 18) / cols, (lane_height - 38) / rows)
+		var radius := clampf(minf(stride.x, stride.y) * 0.26, 1.4, 6.6)
+		var capacity := maxi(0, objects.size() - 2) * 2
+		if _circles.instance_count != capacity:
+			_circles.instance_count = capacity
+			_instances.resize(capacity * INSTANCE_FLOATS)
+		_circle_count = 0
+		for i in range(2, objects.size()):
 			var orb := objects[i]
-			if i < 2 or not is_instance_valid(orb) or not backend.visible(i): continue
+			if not backend.visible(i): continue
 			if i < GLOBAL_COUNT:
 				var px := pad + 18.0 + (size.x - 2.0 * pad - 36.0) * (i - 2) / (GLOBAL_COUNT - 3.0)
 				_orb(Vector2(px, pad + 54), minf(5.0, size.x / 115.0), GREEN, orb)
@@ -48,11 +85,14 @@ class Arena extends Control:
 			@warning_ignore("integer_division")
 			var index := (i - GLOBAL_COUNT) / 2
 			var lane := left if i % 2 == 0 else right
-			var stride := Vector2((lane.size.x - 18) / cols, (lane.size.y - 38) / rows)
 			@warning_ignore("integer_division")
 			var point := lane.position + Vector2(9, 31) + (Vector2(index % cols, index / cols) + Vector2(0.5, 0.5)) * stride
 			point += orb.offset.limit_length() * stride * 0.33
-			_orb(point, clampf(minf(stride.x, stride.y) * 0.26, 1.4, 6.6), CYAN if i % 2 == 0 else GOLD, orb)
+			_orb(point, radius, CYAN if i % 2 == 0 else GOLD, orb)
+		if _circle_count > 0:
+			_circles.visible_instance_count = _circle_count
+			_circles.buffer = _instances
+			draw_multimesh(_circles, null)
 		var play := bounds.grow(-32.0)
 		for i in mini(2, objects.size()):
 			var avatar := objects[i]
@@ -72,9 +112,22 @@ class Arena extends Control:
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 13, accent)
 
 	func _orb(pos: Vector2, radius: float, color: Color, orb: Orb) -> void:
-		var bright := color.darkened(0.27 * (1.0 - orb.energy))
-		if orb.active: draw_circle(pos, radius * 1.71, Color(color, 0.20))
-		draw_circle(pos, radius, bright)
+		if orb.active:
+			_circle(pos, radius * 1.71, Color(color, 0.20))
+		_circle(pos, radius, color.darkened(0.27 * (1.0 - orb.energy)))
+
+	func _circle(pos: Vector2, radius: float, color: Color) -> void:
+		# A 2D MultiMesh stores two padded transform rows followed by RGBA.
+		var base := _circle_count * INSTANCE_FLOATS
+		_instances[base] = radius
+		_instances[base + 3] = pos.x
+		_instances[base + 5] = radius
+		_instances[base + 7] = pos.y
+		_instances[base + 8] = color.r
+		_instances[base + 9] = color.g
+		_instances[base + 10] = color.b
+		_instances[base + 11] = color.a
+		_circle_count += 1
 
 var _backend: Node
 var _pool: Node
@@ -373,6 +426,8 @@ func _close_room(message: String) -> void:
 func _process(dt: float) -> void:
 	if not _open:
 		return
+	if _trace != null:
+		_trace.record_frame()
 	var frame: Dictionary = _backend.advance()
 	var now := Time.get_ticks_msec()
 	if frame.has("error"):

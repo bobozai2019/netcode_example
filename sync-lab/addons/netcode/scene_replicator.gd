@@ -33,6 +33,9 @@ var _root_integer_values := PackedInt64Array()
 var _root_integer_bytes: Array = []
 var _use_internal_integer_sample := false
 var _root_sampler: NetcodeSceneSampler
+var _root_apply_members: Array[StringName] = []
+var _root_apply_kinds := PackedByteArray()
+var _proxy_changes_only := false
 var _pending_refs: Dictionary = {}
 var _smooth: Dictionary = {}
 var _snap := true
@@ -85,6 +88,10 @@ func prime_native_writer() -> bool:
 static func binding_key(session: NetcodeGame) -> StringName:
     return "netcode_binding_" + String.num_uint64(session.get_instance_id(), 16)
 
+func bind_native(session: NetcodeGame, id: int, proxy_changes_only: bool) -> bool:
+    _proxy_changes_only = proxy_changes_only
+    return bind(session, id)
+
 func bind(session: NetcodeGame, id: int) -> bool:
     var actor := replication_root()
     if actor == null or session == null: return false
@@ -107,7 +114,8 @@ func bind(session: NetcodeGame, id: int) -> bool:
     # Keep script subclasses' sample_fields overrides on the virtual path.
     if get_script().get_base_script() == preload("replicated_object.gd"):
         _use_internal_integer_sample = not _root_integer_members.is_empty()
-        if not _use_internal_integer_sample and not _uses_body(): _bind_root_sample()
+        if (not _use_internal_integer_sample or _proxy_changes_only) and not _uses_body():
+            _bind_root_sample()
     return true
 
 func _bind_root_sample() -> void:
@@ -118,17 +126,24 @@ func _bind_root_sample() -> void:
     var members: Array[StringName] = []
     var kinds := PackedByteArray()
     var caps := PackedInt32Array()
+    # Native root fields without interpolation can reuse the sampler's member order on apply.
+    var direct_apply := _native_actor != null and _interpolation.is_empty() and _automatic_paths.is_empty()
     for path in _paths:
         var kind := SampleKind.RAW
         match _kinds[path]:
             "integer64": kind = SampleKind.INTEGER
             "array_value": kind = SampleKind.ARRAY
             "dictionary_value": kind = SampleKind.DICTIONARY
+        direct_apply = direct_apply and kind <= SampleKind.INTEGER
         members.append(_member_names[path])
         kinds.append(kind)
         caps.append(_caps.get(path, 0))
     var sampler := NetcodeSceneSampler.new()
-    if sampler.configure(members, kinds, caps): _root_sampler = sampler
+    if not sampler.configure(members, kinds, caps): return
+    _root_sampler = sampler
+    if direct_apply:
+        _root_apply_members = members
+        _root_apply_kinds = kinds
 
 
 func _record_fields(script:Script) -> Array:
@@ -339,8 +354,55 @@ func _read_member(target:Node,path:NodePath) -> Variant:
 
 func _before_apply(baseline:bool) -> void:
     if baseline: _baseline_epoch = game.routing_info(object_id, false).epoch
+    if not _root_apply_members.is_empty(): return
     _snap=baseline or has_authority()
     if _snap: _smooth.clear()
+
+func can_apply_received_fields() -> bool:
+    return not _root_apply_members.is_empty()
+
+func apply_received_fields(mask: int, fields: Array, baseline: bool) -> void:
+    var root := replication_root()
+    if root == null: return
+    var generation := _binding_generation
+    if baseline: _before_apply(true)
+    var next := 0
+    for i in _root_apply_members.size():
+        if not (mask & (1 << i)): continue
+        var value: Variant = fields[next]
+        next += 1
+        if _root_apply_kinds[i] == SampleKind.INTEGER:
+            if value.size() != 8: continue
+            value = value.decode_s64(0)
+        root.set(_root_apply_members[i], value)
+        if generation != _binding_generation or not is_instance_valid(root): return
+    initialized = true
+
+func _apply_fields(sampled: Array, fields: Array, offset: int, baseline: bool, sample_invalidated := false) -> bool:
+    if _root_apply_members.is_empty() or offset != 0 or sample_invalidated:
+        return super._apply_fields(sampled, fields, offset, baseline, sample_invalidated)
+    var root := replication_root()
+    if root == null: return false
+    var generation := _binding_generation
+    var wrote_field := false
+    for i in _root_apply_members.size():
+        var value: Variant = fields[i]
+        var matched: bool = not baseline and sampled[i] == value
+        if matched and not wrote_field: continue
+        var member := _root_apply_members[i]
+        var integer := _root_apply_kinds[i] == SampleKind.INTEGER
+        if integer:
+            if value.size() != 8: continue
+            value = value.decode_s64(0)
+        # A preceding setter can invalidate even a matching sample.
+        if matched:
+            var current: Variant = root.get(member)
+            if generation != _binding_generation or not is_instance_valid(root): return false
+            if (not integer or current is int) and current == value: continue
+        root.set(member, value)
+        if generation != _binding_generation or not is_instance_valid(root): return false
+        wrote_field = true
+    return true
 
 func _equal_member(path: NodePath) -> void:
     _smooth.erase(path)
@@ -430,6 +492,8 @@ func unbind() -> void:
     _root_integer_bytes.clear()
     _use_internal_integer_sample = false
     _root_sampler = null
+    _root_apply_members.clear()
+    _root_apply_kinds.clear()
     _smooth.clear()
     _pending_refs.clear()
     super.unbind()

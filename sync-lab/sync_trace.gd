@@ -13,10 +13,21 @@ var _player_writes := 0
 var _skipped_writes := 0
 var _next_sample := 0
 var _last_sample := 0
+var _last_frame_usec := 0
+var _frame_intervals := PackedInt64Array()
+var _frame_elapsed_usec := 0
 
 func _init(count: int) -> void:
 	_last_versions.resize(count)
 	_last_instances.resize(count)
+
+func record_frame() -> void:
+	var now := Time.get_ticks_usec()
+	if _last_frame_usec > 0:
+		var interval := now - _last_frame_usec
+		_frame_intervals.append(interval)
+		_frame_elapsed_usec += interval
+	_last_frame_usec = now
 
 func written(index: int, accepted: bool) -> void:
 	if not accepted:
@@ -65,6 +76,12 @@ func sample(backend: Node, orbs: Array[Orb], host: bool, session: Dictionary) ->
 		"interval_ms": ticks - _last_sample if _last_sample else 0, "player_writes": _player_writes,
 		"load_writes": _writes, "skipped_writes": _skipped_writes, "remote_groups": groups,
 		"sample_objects": samples, "sdk_state_resets": _resets})
+	if _frame_elapsed_usec > 0:
+		_frame_intervals.sort()
+		var p95 := ceili(_frame_intervals.size() * 0.95) - 1
+		session["fps"] = _frame_intervals.size() * 1000000.0 / _frame_elapsed_usec
+		session["frame_p95_ms"] = _frame_intervals[p95] / 1000.0
+	session["draw_calls"] = int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
 	print("SYNC_LAB_TRACE ", JSON.stringify(session))
 	if EngineDebugger.is_active():
 		EngineDebugger.send_message("sync_lab:watched_objects", [paths])
@@ -73,6 +90,8 @@ func sample(backend: Node, orbs: Array[Orb], host: bool, session: Dictionary) ->
 	_writes = 0
 	_skipped_writes = 0
 	_resets.clear()
+	_frame_intervals.clear()
+	_frame_elapsed_usec = 0
 
 func _watch_reset(orb: Orb) -> void:
 	var sync := orb.get_node_or_null("Sync")

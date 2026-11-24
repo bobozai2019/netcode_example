@@ -60,7 +60,7 @@ func trace_state() -> Dictionary:
         prepare(work, godot, sdk)
 
 
-def run(work, godot, backend, count, seconds):
+def run(work, godot, backend, count, seconds, windowed=False):
     if backend == "Fusion":
         address = "lab-check-" + uuid4().hex[:12]
     else:
@@ -69,15 +69,22 @@ def run(work, godot, backend, count, seconds):
             address = f"127.0.0.1:{sock.getsockname()[1]}"
     ready = work / "host.ready"
     visibility = work / "visibility.txt"
-    common = [str(godot), "--headless", "--path", str(work), "--max-fps", "60", "--quit-after",
-              str(seconds * 60), "--", "--backend", backend, "--endpoint", address, "--objects", str(count),
-              "--demo-check", "--trace", "--demo-visibility", str(visibility)]
+    common = [str(godot), "--path", str(work), "--max-fps", "60", "--quit-after", str(seconds * 60)]
+    user_args = ["--", "--backend", backend, "--endpoint", address, "--objects", str(count),
+                 "--demo-check", "--trace", "--demo-visibility", str(visibility)]
     jobs = {}
     status = {}
     try:
         for role, extra in (("host", ["--host", "--host-ready", str(ready)]), ("guest", ["--join"])):
-            with (work / f"{role}.log").open("wb") as log:
-                jobs[role] = subprocess.Popen([*common, *extra], stdout=log, stderr=subprocess.STDOUT)
+            log_path = work / f"{role}.log"
+            if windowed:
+                position = "8,34" if role == "host" else "950,34"
+                jobs[role] = subprocess.Popen([*common, "--resolution", "930x690", "--position", position,
+                                               "--log-file", str(log_path), *user_args, *extra])
+            else:
+                with log_path.open("wb") as log:
+                    jobs[role] = subprocess.Popen([*common, "--headless", *user_args, *extra],
+                                                  stdout=log, stderr=subprocess.STDOUT)
             if role == "host":
                 deadline = monotonic() + 25
                 while not ready.is_file() and jobs[role].poll() is None and monotonic() < deadline:
@@ -94,7 +101,7 @@ def run(work, godot, backend, count, seconds):
     return status
 
 
-def check(work, statuses, count):
+def check(work, statuses, count, require_proxy_changes=False):
     output = {"objects": count, "exit_codes": statuses,
               "sdk_build_id": (work / "addons/netcode/build-id.txt").read_text().strip()}
     for role in ("host", "guest"):
@@ -107,15 +114,24 @@ def check(work, statuses, count):
         full = [row for row in traces if row["round"] and row["visible"] == count and row["wave"] >= 50]
         if len(full) < 8 or full[-1]["wave"] <= full[0]["wave"]:
             raise RuntimeError(f"{role} did not sustain eight full-view samples")
+        modes = [row.get("proxy_changes_only") for row in full]
+        mode_enabled = all(mode is True for mode in modes) if None not in modes else None
+        if require_proxy_changes and mode_enabled is not True:
+            raise RuntimeError(f"{role} did not run change-only proxy sync with SDK {output['sdk_build_id']}")
         advancing = [sum(group["advanced"] for group in row["remote_groups"].values()) for row in full]
         if sum(value > 0 for value in advancing) < 8:
             raise RuntimeError(f"{role} did not observe sustained remote version updates")
         output[role] = {"field_groups": target, "full_samples": len(full), "wave_first": full[0]["wave"],
                         "wave_last": full[-1]["wave"],
+                        "fps_median": round(statistics.median(row["fps"] for row in full), 2),
+                        "frame_p95_ms_median": round(statistics.median(row["frame_p95_ms"] for row in full), 2),
+                        "draw_calls_median": statistics.median(row["draw_calls"] for row in full),
                         "physics_hz_median": round(statistics.median(row["physics_hz"] for row in full), 2),
                         "age_p95_ms_median": statistics.median(row["age_p95_ms"] for row in full),
                         "queued_bytes_peak": max(row["queued_bytes"] or 0 for row in traces),
                         "remote_advanced_median": statistics.median(advancing)}
+        if "proxy_changes_only" in full[0]:
+            output[role]["proxy_changes_only"] = mode_enabled
         if role == "guest":
             areas = [tuple(map(int, item)) for item in AREA.findall(log)]
             group = (count + 24) // 2
@@ -138,19 +154,28 @@ def main():
     parser.add_argument("--backend", choices=("Netcode", "Fusion"), default="Netcode")
     parser.add_argument("--cloud", action="store_true", help="Use Photon Cloud for the Fusion run")
     parser.add_argument("--seconds", type=int, default=33)
+    parser.add_argument("--windowed", action="store_true", help="Use two visible windows for frame-rate measurements")
+    parser.add_argument("--require-proxy-changes", action="store_true",
+                        help="Require the bound Netcode templates to use change-only proxy sync")
     parser.add_argument("--baseline-backend", type=Path, help="Replay an archived pre-migration TCP backend")
     args = parser.parse_args()
+    if args.require_proxy_changes and (args.backend != "Netcode" or args.baseline_backend):
+        parser.error("--require-proxy-changes requires the current Netcode backend")
     if not budget(ROOT, 128 * 1024**2)["allowed"]:
         raise SystemExit("Output budget exceeded")
-    godot = LAB / "runtime/godot-4.6.1/Godot_v4.6.1-stable_win64_console.exe"
+    executable = "Godot_v4.6.1-stable_win64" + ("" if args.windowed else "_console")
+    godot = LAB / "runtime/godot-4.6.1" / f"{executable}.exe"
     kind = "baseline" if args.baseline_backend else args.backend.lower()
+    if args.windowed:
+        kind += "-windowed"
     relative = Path(f"tmp/sync-lab-native-{kind}-{args.objects}")
     work = create_job(ROOT, relative, "temp")
     passed = False
     try:
         with job_lock(work, "temp"):
             configure(work, godot, args.sdk.resolve(), args.backend, args.cloud, args.baseline_backend)
-            results = check(work, run(work, godot, args.backend, args.objects, args.seconds), args.objects)
+            statuses = run(work, godot, args.backend, args.objects, args.seconds, args.windowed)
+            results = check(work, statuses, args.objects, args.require_proxy_changes)
             print(json.dumps(results, ensure_ascii=False), flush=True)
             passed = True
     finally:
