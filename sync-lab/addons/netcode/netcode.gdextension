@@ -1,0 +1,12 @@
+[configuration]
+
+entry_symbol = "netcode_init"
+compatibility_minimum = "4.5"
+
+[libraries]
+
+windows.x86_64 = "bin/netcode_godot.dll"
+[dependencies]
+
+windows.x86_64 = { "res://addons/netcode/bin/netcode_transport_tcp.dll": "" }
+

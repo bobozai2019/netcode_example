@@ -33,7 +33,7 @@
 
 ## 运行和复查
 
-在示例仓库根目录运行以下命令。第一条运行[编译后的 C++ 扩展](README.md#重新编译)，模拟 A 写入、丢包、B 接收和 ACK。第二条加载官方 Racing Starter Kit 随附的 Photon 扩展，逐项调用其布局 API。把 `$racing` 改为本地 Racing 项目目录。两条都可离线运行。[Racing Starter Kit](https://doc.photonengine.com/fusion-godot/v3-shared-authority/game-samples/racing-starter-kit)
+在示例仓库根目录运行以下命令。第一条运行[附带的 Windows x64 C++ 扩展](README.md#运行)，模拟 A 写入、丢包、B 接收和 ACK。第二条加载官方 Racing Starter Kit 随附的 Photon 扩展，逐项调用其布局 API。把 `$racing` 改为本地 Racing 项目目录。两条都可离线运行。[Racing Starter Kit](https://doc.photonengine.com/fusion-godot/v3-shared-authority/game-samples/racing-starter-kit)
 
 ```powershell
 $godot = 'godot'

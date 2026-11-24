@@ -38,19 +38,22 @@ func trace_state() -> Dictionary:
 		if valid: return {"aoi": current}
 	return {"aoi": -1}
 ''', encoding="utf-8")
-    fusion = LAB / "addons/fusion"
-    target = work / "addons/fusion"
-    (target / "bin").mkdir(parents=True)
-    shutil.copy2(fusion / "fusion.gdextension", target)
-    name = "libfusion.windows.editor.x86_64.release.dll"
-    shutil.copy2(fusion / "bin" / name, target / "bin")
+    extensions = ["res://addons/netcode/netcode.gdextension"]
+    if backend == "Fusion":
+        fusion = LAB / "addons/fusion"
+        target = work / "addons/fusion"
+        (target / "bin").mkdir(parents=True)
+        shutil.copy2(fusion / "fusion.gdextension", target)
+        name = "libfusion.windows.editor.x86_64.release.dll"
+        shutil.copy2(fusion / "bin" / name, target / "bin")
+        extensions.append("res://addons/fusion/fusion.gdextension")
     if backend == "Fusion" and cloud:
         project = work / "project.godot"
         settings = project.read_text(encoding="utf-8")
         project.write_text(settings.replace("connection/mode=1", "connection/mode=0"), encoding="utf-8")
     (work / ".godot").mkdir()
     (work / ".godot/extension_list.cfg").write_text(
-        "res://addons/netcode/netcode.gdextension\nres://addons/fusion/fusion.gdextension\n")
+        "\n".join(extensions) + "\n", encoding="utf-8")
     if sdk.is_dir():
         shutil.copytree(sdk, work / "addons/netcode")
     else:

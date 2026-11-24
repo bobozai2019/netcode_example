@@ -26,7 +26,9 @@ git clone https://github.com/bobozai2019/netcode_example.git examples
 cd examples
 ```
 
-以下命令在示例仓库根目录执行。默认使用同级框架的 `out/install/win-x64-msvc-mt/<配置>/<产品>`。传入 `--sdk-root` 可以改用其他安装位置。单独取得本仓库时，也可以把 SDK 解压为这套布局，Unity 的 tgz 解到 `unity/` 时去掉内部的 `package/` 前缀。生成的游戏交付包位于本地 `out/packages/`。
+Shiftline、Godot 车场、Sync Lab 和属性采样示例已附各自的 Windows x64 插件。Shiftline 和车场可在 Godot 打开对应的 `project.godot`。Sync Lab 首次运行使用 [启动脚本](sync-lab/launch.bat)，它会登记原生扩展。Photon 对照模式需另行安装 Fusion SDK。
+
+以下构建、刷新插件和验收命令在示例仓库根目录执行。默认使用同级框架的 `out/install/win-x64-msvc-mt/<配置>/<产品>`。传入 `--sdk-root` 可以改用其他安装位置。单独取得本仓库时，也可以把 SDK 解压为这套布局，Unity 的 tgz 解到 `unity/` 时去掉内部的 `package/` 前缀。生成的游戏交付包位于本地 `out/packages/`。
 
 ```powershell
 python -B tools/prepare_godot_fps.py

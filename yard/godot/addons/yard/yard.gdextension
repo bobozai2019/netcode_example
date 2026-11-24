@@ -1,0 +1,6 @@
+[configuration]
+entry_symbol = "yard_example_init"
+compatibility_minimum = "4.5"
+
+[libraries]
+windows.x86_64 = "bin/netcode_yard_example.dll"

@@ -14,7 +14,7 @@
 
 ## 运行
 
-按下方步骤编译扩展后，在本目录用 Godot 4.7.1 运行以下命令。启动脚本直接加载扩展和演示场景。
+本目录已附 Windows x64 演示扩展。在本目录用 Godot 4.7.1 运行以下命令，启动脚本会直接加载扩展和演示场景。
 
 ```powershell
 godot --headless --script res://run_demo.gd

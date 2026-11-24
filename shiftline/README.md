@@ -20,13 +20,13 @@ Shiftline 是一个 Windows x64 局域网团队 FPS。Tide 和 Ember 在同一�
 
 ## 源码工程
 
-从仓库根运行以下命令。默认使用仓库当前的 Windows Netcode 插件 ZIP，按 SHA-256 校验后安装到工程并执行首次导入。Godot 可用 `--godot-exe` 或 `NETCODE_GODOT_EXE` 指定，验收版本为 4.7.1。
+Windows x64 可用 Godot 4.7.1 打开 `shiftline/project.godot`，使用随工程提交的 Netcode 插件按 F5 运行。要从当前 SDK ZIP 刷新插件，可在仓库根运行以下命令。脚本校验 ZIP 后安装并导入工程，可用 `--godot-exe` 或 `NETCODE_GODOT_EXE` 指定 Godot。
 
 ```powershell
 python -B tools/prepare_godot_fps.py
 ```
 
-在 Godot 打开 `shiftline/project.godot`，按 F5。构建机有对应版本 Windows x64 导出模板时，可从仓库根复跑以下入口。
+可从仓库根复跑以下入口。打包需要对应版本的 Windows x64 导出模板。
 
 ```powershell
 python -B tools/verify_godot_fps.py

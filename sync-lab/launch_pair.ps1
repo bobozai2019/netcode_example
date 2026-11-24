@@ -25,7 +25,8 @@ if ($runProject) {
 }
 $exampleRoot = Split-Path -Parent $PSScriptRoot
 
-if ($runProject -and ($env:NETCODE_FUSION_ADDON -or -not (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'addons/fusion/fusion.gdextension')))) {
+$fusionExtension = Join-Path $PSScriptRoot 'addons/fusion/fusion.gdextension'
+if ($runProject -and ($env:NETCODE_FUSION_ADDON -or ($Backend -eq 'Fusion' -and -not (Test-Path -LiteralPath $fusionExtension)))) {
     python -B (Join-Path $PSScriptRoot 'prepare_fusion.py')
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
@@ -33,14 +34,15 @@ $projectArgs = @('--path', ('"{0}"' -f $PSScriptRoot))
 if ($runProject) {
     $cache = Join-Path $PSScriptRoot '.godot'
     New-Item -ItemType Directory -Force -Path $cache | Out-Null
-    @(
-        'res://addons/netcode/netcode.gdextension'
-        'res://addons/fusion/fusion.gdextension'
-    ) | Set-Content -Encoding Ascii -LiteralPath (Join-Path $cache 'extension_list.cfg')
+    $extensions = @('res://addons/netcode/netcode.gdextension')
+    if (Test-Path -LiteralPath $fusionExtension) {
+        $extensions += 'res://addons/fusion/fusion.gdextension'
+    }
+    $extensions | Set-Content -Encoding Ascii -LiteralPath (Join-Path $cache 'extension_list.cfg')
 }
 $netcodeDll = Join-Path $PSScriptRoot 'addons/netcode/bin/netcode_godot.dll'
 $archive = $env:NETCODE_BENCH_SDK
-if (-not $archive -and $runProject) {
+if (-not $archive -and $runProject -and -not (Test-Path -LiteralPath $netcodeDll)) {
     $candidate = Join-Path (Split-Path -Parent $exampleRoot) 'netcode/out/packages/godot-win-x64/current/netcode-godot-win-x64.zip'
     if (Test-Path -LiteralPath $candidate) { $archive = $candidate }
 }
