@@ -1,0 +1,89 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d2xm2"]
+albedo_color = Color(0.95686275, 0.7254902, 0.34117648, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_umnmv"]
+size = Vector3(0.09, 4.13, 0.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7t3pk"]
+size = Vector3(1, 0.055, 0.1)
+
+[node name="Ladder" type="Node3D"]
+
+[node name="LeftRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53, 2.065, -0.28)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_umnmv")
+
+[node name="RightRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.53, 2.065, -0.28)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_umnmv")
+
+[node name="Rung01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.438, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.696, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.954, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung05" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.212, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung06" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.47, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung07" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.728, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung08" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.986, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung09" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.244, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung10" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.502, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung11" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.76, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung12" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.018, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="Rung13" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.276, -0.23)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_7t3pk")
+
+[node name="ClimbOrigin" type="Marker3D" parent="."]

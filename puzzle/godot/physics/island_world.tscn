@@ -1,0 +1,58 @@
+[gd_scene format=3]
+
+[sub_resource type="World3D" id="World_island"]
+resource_local_to_scene = true
+
+[sub_resource type="BoxShape3D" id="Shape_floor"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxShape3D" id="Shape_body"]
+size = Vector3(1, 1, 1)
+
+[node name="IslandWorld" type="SubViewport"]
+world_3d = SubResource("World_island")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.5, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("Shape_floor")
+
+[node name="Body0" type="RigidBody3D" parent="."]
+position = Vector3(0, 0.5, 0)
+can_sleep = false
+
+[node name="Collision" type="CollisionShape3D" parent="Body0"]
+shape = SubResource("Shape_body")
+
+[node name="Body1" type="RigidBody3D" parent="."]
+position = Vector3(0, 1.5, 0)
+can_sleep = false
+
+[node name="Collision" type="CollisionShape3D" parent="Body1"]
+shape = SubResource("Shape_body")
+
+[node name="Body2" type="RigidBody3D" parent="."]
+position = Vector3(2, 1, 0)
+can_sleep = false
+
+[node name="Collision" type="CollisionShape3D" parent="Body2"]
+shape = SubResource("Shape_body")
+
+[node name="Body3" type="RigidBody3D" parent="."]
+position = Vector3(3, 1, 0)
+can_sleep = false
+
+[node name="Collision" type="CollisionShape3D" parent="Body3"]
+shape = SubResource("Shape_body")
+
+[node name="Joint" type="Generic6DOFJoint3D" parent="."]
+position = Vector3(2.5, 1, 0)
+node_a = NodePath("../Body2")
+node_b = NodePath("../Body3")
+linear_limit_x/enabled = true
+angular_limit_x/enabled = true
+linear_limit_y/enabled = true
+angular_limit_y/enabled = true
+linear_limit_z/enabled = true
+angular_limit_z/enabled = true

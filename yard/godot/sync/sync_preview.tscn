@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://sync/sync_preview.gd" id="1"]
+[ext_resource type="PackedScene" path="res://sync/sync_panel.tscn" id="2"]
+
+[node name="SyncPreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Host" type="Node" parent="."]
+
+[node name="Panel" parent="Host" instance=ExtResource("2")]
+
+[node name="Guest" type="Node" parent="."]
+
+[node name="Panel" parent="Guest" instance=ExtResource("2")]
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Content" type="VBoxContainer" parent="Center"]
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="Center/Content"]
+theme_override_font_sizes/font_size = 30
+text = "Godot 属性同步与 RPC"
+
+[node name="Status" type="Label" parent="Center/Content"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(0.48, 0.83, 0.93, 1)
+text = "正在连接本机房主与玩家…"
+
+[node name="Divider" type="HSeparator" parent="Center/Content"]
+
+[node name="HostValues" type="Label" parent="Center/Content"]
+unique_name_in_owner = true
+theme_override_font_sizes/font_size = 22
+text = "房主      分数  —      收到 RPC  — 次"
+
+[node name="GuestValues" type="Label" parent="Center/Content"]
+unique_name_in_owner = true
+theme_override_font_sizes/font_size = 22
+text = "玩家      分数  —      收到 RPC  — 次"
+
+[node name="Actions" type="HBoxContainer" parent="Center/Content"]
+theme_override_constants/separation = 12
+
+[node name="Add" type="Button" parent="Center/Content/Actions"]
+unique_name_in_owner = true
+text = "写者加 1 分"
+disabled = true
+
+[node name="Lamp" type="Button" parent="Center/Content/Actions"]
+unique_name_in_owner = true
+text = "切换指示灯"
+disabled = true
+
+[node name="Claim" type="Button" parent="Center/Content/Actions"]
+unique_name_in_owner = true
+text = "玩家申请写权"
+disabled = true
+
+[node name="Send" type="Button" parent="Center/Content/Actions"]
+unique_name_in_owner = true
+text = "玩家广播 RPC"
+disabled = true
+
+[connection signal="pressed" from="Center/Content/Actions/Add" to="." method="_add_score"]
+[connection signal="pressed" from="Center/Content/Actions/Lamp" to="." method="_toggle_lamp"]
+[connection signal="pressed" from="Center/Content/Actions/Claim" to="." method="_claim"]
+[connection signal="pressed" from="Center/Content/Actions/Send" to="." method="_send_rpc"]

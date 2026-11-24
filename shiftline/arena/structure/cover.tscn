@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/quaternius/Container_Small.gltf" id="4_cposp"]
+[ext_resource type="PackedScene" path="res://assets/quaternius/Barrier_Fixed.gltf" id="5_5giqg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_orc3p"]
+size = Vector3(2.9964, 2.8512003, 2.7984)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_avk3y"]
+size = Vector3(3.632, 3.456, 3.392)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b1iwl"]
+size = Vector3(2.6, 0.94, 0.42)
+
+[node name="Cover" type="Node3D"]
+
+[node name="TideContainer" parent="." instance=ExtResource("4_cposp")]
+transform = Transform3D(1.32, 0, 0, 0, 1.32, 0, 0, 0, 1.32, -7, 0, 1.6)
+
+[node name="TideContainerCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.4256, 1.6)
+
+[node name="Collision" type="CollisionShape3D" parent="TideContainerCollision"]
+shape = SubResource("BoxShape3D_orc3p")
+
+[node name="EmberContainer" parent="." instance=ExtResource("4_cposp")]
+transform = Transform3D(1.32, 0, 0, 0, 1.32, 0, 0, 0, 1.32, 7, 0, -1.6)
+
+[node name="EmberContainerCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.4256, -1.6)
+
+[node name="Collision" type="CollisionShape3D" parent="EmberContainerCollision"]
+shape = SubResource("BoxShape3D_orc3p")
+
+[node name="CenterContainer" parent="." instance=ExtResource("4_cposp")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 0, 0, 8)
+
+[node name="CenterContainerCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.728, 8)
+
+[node name="Collision" type="CollisionShape3D" parent="CenterContainerCollision"]
+shape = SubResource("BoxShape3D_avk3y")
+
+[node name="TideBarrier" parent="." instance=ExtResource("5_5giqg")]
+transform = Transform3D(0.72, 0, 0, 0, 0.72, 0, 0, 0, 0.72, -15, 0, 7.6)
+
+[node name="TideBarrierCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.47, 7.6)
+
+[node name="Collision" type="CollisionShape3D" parent="TideBarrierCollision"]
+shape = SubResource("BoxShape3D_b1iwl")
+
+[node name="EmberBarrier" parent="." instance=ExtResource("5_5giqg")]
+transform = Transform3D(0.72, 0, 0, 0, 0.72, 0, 0, 0, 0.72, 15, 0, 7.6)
+
+[node name="EmberBarrierCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.47, 7.6)
+
+[node name="Collision" type="CollisionShape3D" parent="EmberBarrierCollision"]
+shape = SubResource("BoxShape3D_b1iwl")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://verification/plates/plates.gd" id="1"]
+
+[node name="PressurePlates" type="Node2D"]
+script = ExtResource("1")

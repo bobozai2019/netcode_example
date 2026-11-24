@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/grenade/grenade.gd" id="1"]
+[ext_resource type="Script" path="res://addons/netcode/scene_replicator.gd" id="2"]
+[ext_resource type="PackedScene" path="res://assets/quaternius/Grenade.gltf" id="3"]
+
+[node name="Grenade" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Sync" type="Node" parent="."]
+script = ExtResource("2")
+root_mode = 0
+layout_key = "shiftline.grenade"
+properties = Array[NodePath]([NodePath(":match_id"), NodePath(":thrower_id"), NodePath(":thrower_team"), NodePath(":position"), NodePath(":velocity"), NodePath(":detonate_at")])
+
+[node name="Appearance" parent="." instance=ExtResource("3")]
+scale = Vector3(0.51, 0.51, 0.51)
+top_level = true
+visible = false

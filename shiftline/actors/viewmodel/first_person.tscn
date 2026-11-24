@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://actors/viewmodel/viewmodel.tscn" id="viewmodel"]
+
+[node name="View" type="Camera3D"]
+fov = 80.0
+near = 0.045
+far = 105.0
+
+[node name="Viewmodel" parent="." instance=ExtResource("viewmodel")]

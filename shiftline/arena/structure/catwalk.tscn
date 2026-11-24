@@ -1,0 +1,303 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jxpuc"]
+albedo_color = Color(0.20784314, 0.31764707, 0.3647059, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d2xm2"]
+albedo_color = Color(0.95686275, 0.7254902, 0.34117648, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2mojl"]
+size = Vector3(45, 0.3, 4.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5kujp"]
+size = Vector3(45, 0.3, 4.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_au8vv"]
+size = Vector3(44.8, 0.92, 0.11)
+
+[sub_resource type="BoxMesh" id="BoxMesh_kmpi3"]
+size = Vector3(44.8, 0.075, 0.075)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fqrp4"]
+size = Vector3(0.075, 0.94, 0.08)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4ukcv"]
+size = Vector3(5.9000006, 0.92, 0.11)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rd6le"]
+size = Vector3(5.9000006, 0.075, 0.075)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3a7w3"]
+size = Vector3(20.2, 0.92, 0.11)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3k2vi"]
+size = Vector3(20.2, 0.075, 0.075)
+
+[node name="Catwalk" type="Node3D"]
+
+[node name="Deck" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, -11.6)
+
+[node name="Collision" type="CollisionShape3D" parent="Deck"]
+shape = SubResource("BoxShape3D_2mojl")
+
+[node name="Mesh" type="MeshInstance3D" parent="Deck"]
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_5kujp")
+
+[node name="Span1Collision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.76, -13.8)
+
+[node name="Collision" type="CollisionShape3D" parent="Span1Collision"]
+shape = SubResource("BoxShape3D_au8vv")
+
+[node name="Span1LowerRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_kmpi3")
+
+[node name="Span1UpperRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_kmpi3")
+
+[node name="Span1Post01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.4, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.042105, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.68421, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.326316, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post05" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.968421, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post06" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.610526, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post07" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.252631, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post08" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.894737, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post09" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.536842, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post10" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1789473, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post11" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1789473, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post12" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.536842, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post13" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.894737, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post14" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.252631, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post15" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.610526, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post16" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.968421, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post17" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.326316, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post18" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.68421, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post19" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.042105, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span1Post20" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.4, 3.77, -13.8)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span2Collision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.849999, 3.76, -9.4)
+
+[node name="Collision" type="CollisionShape3D" parent="Span2Collision"]
+shape = SubResource("BoxShape3D_4ukcv")
+
+[node name="Span2LowerRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.849999, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_rd6le")
+
+[node name="Span2UpperRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.849999, 4.25, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_rd6le")
+
+[node name="Span2Post01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span2Post02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.833333, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span2Post03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.866667, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span2Post04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.9, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Collision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.76, -9.4)
+
+[node name="Collision" type="CollisionShape3D" parent="Span3Collision"]
+shape = SubResource("BoxShape3D_3a7w3")
+
+[node name="Span3LowerRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_3k2vi")
+
+[node name="Span3UpperRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_3k2vi")
+
+[node name="Span3Post01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.1, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.855556, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.611111, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3666668, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post05" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1222223, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post06" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1222223, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post07" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3666668, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post08" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.611111, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post09" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.855556, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span3Post10" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span4Collision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.849999, 3.76, -9.4)
+
+[node name="Collision" type="CollisionShape3D" parent="Span4Collision"]
+shape = SubResource("BoxShape3D_4ukcv")
+
+[node name="Span4LowerRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.849999, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_rd6le")
+
+[node name="Span4UpperRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.849999, 4.25, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_rd6le")
+
+[node name="Span4Post01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.9, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span4Post02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.866667, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span4Post03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.833333, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="Span4Post04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 3.77, -9.4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_fqrp4")
+
+[node name="ClimbExit" type="Marker3D" parent="."]
+position = Vector3(0, 3.3, 0)

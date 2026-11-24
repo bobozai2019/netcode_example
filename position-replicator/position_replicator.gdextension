@@ -1,0 +1,8 @@
+[configuration]
+entry_symbol = "position_replicator_init"
+compatibility_minimum = "4.5"
+
+[libraries]
+windows.x86_64 = "res://bin/position_replicator.dll"
+linux.x86_64 = "res://bin/libposition_replicator.so"
+macos = "res://bin/libposition_replicator.dylib"

@@ -1,0 +1,5 @@
+[gd_resource type="NetcodeReplicationConfig" format=3]
+
+[resource]
+properties = Array[NodePath]([NodePath(":version"), NodePath(":energy"), NodePath(":active"), NodePath(":label"), NodePath(":offset"), NodePath(":trail"), NodePath(":tags"), NodePath(":sent_at")])
+limits = {NodePath(":trail"): 4, NodePath(":tags"): 4}

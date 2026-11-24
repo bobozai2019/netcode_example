@@ -1,0 +1,197 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jxpuc"]
+albedo_color = Color(0.20784314, 0.31764707, 0.3647059, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d2xm2"]
+albedo_color = Color(0.95686275, 0.7254902, 0.34117648, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cew77"]
+size = Vector3(2.2, 0.2, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_43ktr"]
+size = Vector3(2.19, 0.025, 0.035)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tkq1r"]
+size = Vector3(2.2, 0.18, 7.299322)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8gryn"]
+size = Vector3(0.075, 0.082, 7.2006946)
+
+[node name="Stairs" type="Node3D"]
+
+[node name="Step01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10625, -3.2)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20625, -3.02)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3125, -3.6)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4125, -3.42)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51875, -4)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.61875, -3.82)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.725, -4.4)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.825, -4.22)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step05" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.93125, -4.8)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing05" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.03125, -4.62)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step06" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1375, -5.2)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing06" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2375, -5.02)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step07" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34375, -5.6)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing07" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.44375, -5.42)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step08" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -6)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing08" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, -5.82)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step09" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75625, -6.4)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing09" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85625, -6.22)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step10" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9625, -6.8)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing10" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0625, -6.62)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step11" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.16875, -7.2)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing11" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.26875, -7.02)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step12" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.375, -7.6)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing12" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.475, -7.42)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step13" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.58125, -8)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing13" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.68125, -7.82)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step14" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7875, -8.4)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing14" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8875, -8.22)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step15" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.99375, -8.8)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing15" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.09375, -8.62)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Step16" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -9.2)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_cew77")
+
+[node name="Nosing16" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, -9.02)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_43ktr")
+
+[node name="Ramp" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.87679374, -0.4808666, 0, 0.4808666, 0.87679374, 0, 1.6585526, -6.2528954)
+
+[node name="Collision" type="CollisionShape3D" parent="Ramp"]
+shape = SubResource("BoxShape3D_tkq1r")
+
+[node name="LeftRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.8888032, -0.45828915, 0, 0.45828915, 0.8888032, -1.12, 2.5, -6.2)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_8gryn")
+
+[node name="RightRail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.8888032, -0.45828915, 0, 0.45828915, 0.8888032, 1.12, 2.5, -6.2)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_8gryn")

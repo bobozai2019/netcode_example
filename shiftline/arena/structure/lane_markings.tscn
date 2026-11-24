@@ -1,0 +1,159 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d2xm2"]
+albedo_color = Color(0.95686275, 0.7254902, 0.34117648, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wom4s"]
+size = Vector3(1.45, 0.012, 0.075)
+
+[node name="LaneMarkings" type="Node3D"]
+
+[node name="Marking01" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking02" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking03" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking04" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking05" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking06" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking07" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking08" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking09" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking10" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking11" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking12" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking13" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking14" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking15" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking16" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking17" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking18" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking19" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking20" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking21" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking22" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking23" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking24" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking25" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking26" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking27" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking28" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking29" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0.003, -4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")
+
+[node name="Marking30" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0.003, 4)
+material_override = SubResource("StandardMaterial3D_d2xm2")
+mesh = SubResource("BoxMesh_wom4s")

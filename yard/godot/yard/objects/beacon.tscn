@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[sub_resource type="BoxMesh" id="BoxMesh_beacon"]
+size = Vector3(51, 51, 50)
+
+[sub_resource type="StandardMaterial3D" id="Material_beacon"]
+albedo_color = Color(0.666667, 0.607843, 0.988235, 1)
+roughness = 0.52
+
+[node name="Beacon" type="Node3D"]
+
+[node name="model" type="MeshInstance3D" parent="."]
+material_override = SubResource("Material_beacon")
+mesh = SubResource("BoxMesh_beacon")

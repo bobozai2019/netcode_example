@@ -1,0 +1,169 @@
+{
+  "checked_on": "2026-11-22",
+  "packs": {
+    "quaternius": {
+      "author": "Quaternius",
+      "title": "Toon Shooter Game Kit",
+      "source": "https://quaternius.com/packs/toonshootergamekit.html",
+      "distribution": "https://drive.google.com/drive/folders/1-BDs_EIyd6uiF2XuoyiZEcqnMQIJrE0C",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution_required": false,
+      "license_file": "licenses/CC0-1.0.txt"
+    },
+    "wrad-arms": {
+      "author": "wwwriks",
+      "title": "WRAD ARMS",
+      "source": "https://github.com/wwwriks/wrad-arms",
+      "revision": "f3987244176c33d2c20d4f9e139980af12684d87",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attribution_required": false,
+      "license_file": "licenses/WRAD-ARMS-LICENSE.txt"
+    }
+  },
+  "files": [
+    {
+      "file": "quaternius/Character_Soldier.gltf",
+      "pack": "quaternius",
+      "source_id": "18UU-iuYMQyrQ3OAMFoRA8DkZ2Uo_2cai",
+      "source_url": "https://drive.google.com/open?id=18UU-iuYMQyrQ3OAMFoRA8DkZ2Uo_2cai",
+      "bytes": 2343513,
+      "sha256": "d1395255f7cfa8f766369e37e724fa44e2895a46a719d17f720c9c78b014a901",
+      "meshes": 18,
+      "skin_joint_counts": [
+        43
+      ],
+      "animations": [
+        "Death",
+        "Duck",
+        "HitReact",
+        "Idle",
+        "Idle_Shoot",
+        "Jump",
+        "Jump_Idle",
+        "Jump_Land",
+        "No",
+        "Punch",
+        "Run",
+        "Run_Gun",
+        "Run_Shoot",
+        "Walk",
+        "Walk_Shoot",
+        "Wave",
+        "Yes"
+      ]
+    },
+    {
+      "file": "quaternius/AK.gltf",
+      "pack": "quaternius",
+      "source_id": "1l0xKfDH9bXfoY_I0V5K-ebyvGKOZlyLX",
+      "source_url": "https://drive.google.com/open?id=1l0xKfDH9bXfoY_I0V5K-ebyvGKOZlyLX",
+      "bytes": 81180,
+      "sha256": "7320d771b829e2dcc0e4463a608d1be9b7217bdf0fdf109e8961a83af1854010",
+      "meshes": 1,
+      "skin_joint_counts": [],
+      "animations": []
+    },
+    {
+      "file": "quaternius/Grenade.gltf",
+      "pack": "quaternius",
+      "source_id": "1PoDGyV0rwytND58F15_dKL5TH9QsRaU-",
+      "source_url": "https://drive.google.com/open?id=1PoDGyV0rwytND58F15_dKL5TH9QsRaU-",
+      "bytes": 35175,
+      "sha256": "77cc4e69c9f384fbb0b64efa257acbcc73f4e35521edf005dc6029af3aead930",
+      "meshes": 1,
+      "skin_joint_counts": [],
+      "animations": []
+    },
+    {
+      "file": "quaternius/Crate.gltf",
+      "pack": "quaternius",
+      "source_id": "1CARthb8FHddjbfEPG44jbImahtkFfydK",
+      "source_url": "https://drive.google.com/open?id=1CARthb8FHddjbfEPG44jbImahtkFfydK",
+      "bytes": 17892,
+      "sha256": "33c070385f5f722ad0213476a66ab999afd45e2507574258920abb86bb4aa99e",
+      "meshes": 1,
+      "skin_joint_counts": [],
+      "animations": []
+    },
+    {
+      "file": "quaternius/Barrier_Fixed.gltf",
+      "pack": "quaternius",
+      "source_id": "12FAiplhp57kg5Gyq2PLMTNrSQ2YzgZn1",
+      "source_url": "https://drive.google.com/open?id=12FAiplhp57kg5Gyq2PLMTNrSQ2YzgZn1",
+      "bytes": 207178,
+      "sha256": "be7083a033b4ca831f28b36db5b3a5a17c5f46395aa68040c722afa77ea3e85e",
+      "meshes": 1,
+      "skin_joint_counts": [],
+      "animations": []
+    },
+    {
+      "file": "quaternius/Pallet.gltf",
+      "pack": "quaternius",
+      "source_id": "1PPhFhv7wnY32X6bIAr70aQ26LtfyARZ9",
+      "source_url": "https://drive.google.com/open?id=1PPhFhv7wnY32X6bIAr70aQ26LtfyARZ9",
+      "bytes": 13938,
+      "sha256": "3e0a92324eebcac32eb6fb258892a3fd6d42d7aa32eeddc68d76824ac237bbec",
+      "meshes": 1,
+      "skin_joint_counts": [],
+      "animations": []
+    },
+    {
+      "file": "quaternius/Container_Small.gltf",
+      "pack": "quaternius",
+      "source_id": "1y0pB6G2lehCu8TuhtCxrbUzn7w7zv_Ci",
+      "source_url": "https://drive.google.com/open?id=1y0pB6G2lehCu8TuhtCxrbUzn7w7zv_Ci",
+      "bytes": 57078,
+      "sha256": "06f63543dc0f22006042ca304b681b18ad741c0f20bf6d442f38059216d9ab27",
+      "meshes": 1,
+      "skin_joint_counts": [],
+      "animations": []
+    },
+    {
+      "file": "wrad-arms/arms.glb",
+      "pack": "wrad-arms",
+      "source_id": "wwwriks/wrad-arms:arms.glb",
+      "source_url": "https://github.com/wwwriks/wrad-arms/blob/f3987244176c33d2c20d4f9e139980af12684d87/arms.glb",
+      "bytes": 456328,
+      "sha256": "580efbb0852bf0b41f82dd3e17eafec86b3d2a48f4a7acaa7e64d60e850f565d",
+      "meshes": 1,
+      "skin_joint_counts": [
+        50
+      ],
+      "animations": []
+    }
+  ],
+  "authored": {
+    "tool": "Blender 5.1.2",
+    "source": "source/shiftline-kit.blend",
+    "rebuild_script": "tools/build_godot_fps_art.py",
+    "files": [
+      {
+        "file": "shiftline/rifle.glb",
+        "based_on": "quaternius/AK.gltf",
+        "change": "Separate the magazine geometry, move its pivot to the receiver, keep original materials.",
+        "bytes": 60780,
+        "sha256": "963c6a533e452accff281f6cd862b138a864192456397652dd9fdfed00859253"
+      },
+      {
+        "file": "shiftline/ammo-pack.glb",
+        "change": "Original low-poly ammunition pack.",
+        "bytes": 16100,
+        "sha256": "1f400f870f86354e98cf6e9a0317352740eb20894a02b6337a250fde4aaff9bd"
+      },
+      {
+        "file": "shiftline/crate-debris.glb",
+        "change": "Original splinters using the crate palette.",
+        "bytes": 28032,
+        "sha256": "7e3d0d82aa919d775d800b3e6078dbbb63c1c4bc0dcefe4c8a0e95d5fef883f2"
+      },
+      {
+        "file": "shiftline/wall-trim.glb",
+        "change": "Original reusable folded-steel wall panel.",
+        "bytes": 23900,
+        "sha256": "0b98a0007405e26778f9f9e350ed1fe3356bacc8be848461953dbb3e6accf872"
+      }
+    ]
+  }
+}

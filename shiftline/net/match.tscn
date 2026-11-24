@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://net/match.gd" id="match"]
+[ext_resource type="Script" path="res://addons/netcode/scene_replicator.gd" id="sync"]
+[ext_resource type="PackedScene" path="res://arena/warehouse.tscn" id="warehouse"]
+[ext_resource type="PackedScene" path="res://actors/player/player.tscn" id="player"]
+
+[node name="Match" type="Node3D"]
+script = ExtResource("match")
+
+[node name="Sync" type="Node" parent="."]
+script = ExtResource("sync")
+root_mode = 0
+layout_key = "shiftline.match"
+properties = Array[NodePath]([NodePath(":match_id"), NodePath(":phase"), NodePath(":score_a"), NodePath(":score_b"), NodePath(":winner"), NodePath(":restart_at"), NodePath(":host_ip"), NodePath(":port")])
+
+[node name="Warehouse" parent="." instance=ExtResource("warehouse")]
+
+[node name="PlayerSlot0" parent="." instance=ExtResource("player")]
+slot_index = 0
+
+[node name="PlayerSlot1" parent="." instance=ExtResource("player")]
+slot_index = 1
+
+[node name="PlayerSlot2" parent="." instance=ExtResource("player")]
+slot_index = 2
+
+[node name="PlayerSlot3" parent="." instance=ExtResource("player")]
+slot_index = 3
+
+[node name="PlayerSlot4" parent="." instance=ExtResource("player")]
+slot_index = 4
+
+[node name="PlayerSlot5" parent="." instance=ExtResource("player")]
+slot_index = 5
+
+[node name="PlayerSlot6" parent="." instance=ExtResource("player")]
+slot_index = 6
+
+[node name="PlayerSlot7" parent="." instance=ExtResource("player")]
+slot_index = 7

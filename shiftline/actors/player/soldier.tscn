@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/player/soldier.gd" id="1_f7c2g"]
+[ext_resource type="PackedScene" path="res://assets/quaternius/Character_Soldier.gltf" id="2_aths4"]
+[ext_resource type="PackedScene" path="res://assets/shiftline/rifle.glb" id="3_4aipl"]
+[ext_resource type="PackedScene" path="res://assets/quaternius/Grenade.gltf" id="4_idj2f"]
+
+[node name="Soldier" type="Node3D"]
+script = ExtResource("1_f7c2g")
+
+[node name="Rig" parent="." instance=ExtResource("2_aths4")]
+transform = Transform3D(0.78, 0, 0, 0, 0.78, 0, 0, 0, 0.78, 0, 0, 0)
+
+[node name="AK" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="0"]
+visible = false
+
+[node name="GrenadeLauncher" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="1"]
+visible = false
+
+[node name="Knife_1" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="2"]
+visible = false
+
+[node name="Knife_2" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="3"]
+visible = false
+
+[node name="Pistol" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="4"]
+visible = false
+
+[node name="Revolver" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="5"]
+visible = false
+
+[node name="Revolver_Small" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="6"]
+visible = false
+
+[node name="RocketLauncher" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="7"]
+visible = false
+
+[node name="ShortCannon" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="8"]
+visible = false
+
+[node name="Shotgun" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="9"]
+visible = false
+
+[node name="Shovel" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="10"]
+visible = false
+
+[node name="SMG" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="11"]
+visible = false
+
+[node name="Sniper" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="12"]
+visible = false
+
+[node name="Sniper_2" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="13"]
+visible = false
+
+[node name="Rifle" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="14" instance=ExtResource("3_4aipl")]
+transform = Transform3D(-0.43658996, -0.8780218, -0.19581302, -0.89840424, 0.436738, 0.044781495, 0.046202734, 0.1954825, -0.97955495, 0.010344565, 0.15148556, -0.0541023)
+
+[node name="Grenade" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="15" instance=ExtResource("4_idj2f")]
+transform = Transform3D(0.63, 0, 0, 0, 0.63, 0, 0, 0, 0.63, 0.010344565, 0.15148556, -0.0541023)
+visible = false
+
+[node name="AnimationPlayer" parent="Rig" index="1"]
+callback_mode_process = 2
+
+[editable path="Rig"]

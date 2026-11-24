@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://yard/objects/paint.gd" id="1"]
+[ext_resource type="PackedScene" path="res://yard/objects/lamp.tscn" id="2"]
+
+[node name="Car" type="Node2D"]
+script = ExtResource("1")
+form = 1
+
+[node name="lamp" parent="." instance=ExtResource("2")]

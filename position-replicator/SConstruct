@@ -1,0 +1,5 @@
+import os
+
+sdk = os.path.abspath(os.environ.get("GODOT_CPP_PATH", "godot-cpp"))
+env = SConscript(os.path.join(sdk, "SConstruct"))
+Default(env.SharedLibrary("bin/position_replicator", ["position_replicator.cpp", "racing_replicator.cpp", "register_types.cpp"]))

@@ -1,0 +1,124 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://arena/warehouse.gd" id="warehouse"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/shell.tscn" id="shell"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/lane_markings.tscn" id="lane_markings"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/catwalk.tscn" id="catwalk"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/tide_dispatch.tscn" id="tide_dispatch"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/stairs.tscn" id="stairs"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/ladder.tscn" id="ladder"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/ember_dispatch.tscn" id="ember_dispatch"]
+
+[ext_resource type="PackedScene" path="res://arena/structure/cover.tscn" id="cover"]
+
+[ext_resource type="PackedScene" path="res://arena/props/crate.tscn" id="crate"]
+
+[ext_resource type="PackedScene" path="res://arena/props/ammo_pickup.tscn" id="ammo_pickup"]
+
+[ext_resource type="PackedScene" path="res://arena/props/grenade_pickup.tscn" id="grenade_pickup"]
+
+[node name="Warehouse" type="Node3D"]
+script = ExtResource("warehouse")
+
+[node name="Structure" type="Node3D" parent="."]
+
+[node name="Shell" parent="Structure" instance=ExtResource("shell")]
+
+[node name="LaneMarkings" parent="Structure" instance=ExtResource("lane_markings")]
+
+[node name="Catwalk" parent="Structure" instance=ExtResource("catwalk")]
+
+[node name="TideDispatch" parent="Structure" instance=ExtResource("tide_dispatch")]
+
+[node name="TideStairs" parent="Structure" instance=ExtResource("stairs")]
+position = Vector3(-19.5, 0, 0)
+
+[node name="EmberStairs" parent="Structure" instance=ExtResource("stairs")]
+position = Vector3(19.5, 0, 0)
+
+[node name="TideLadder" parent="Structure" instance=ExtResource("ladder")]
+position = Vector3(-11, 0, -9.06)
+
+[node name="EmberLadder" parent="Structure" instance=ExtResource("ladder")]
+position = Vector3(11, 0, -9.06)
+
+[node name="EmberDispatch" parent="Structure" instance=ExtResource("ember_dispatch")]
+
+[node name="Cover" parent="Structure" instance=ExtResource("cover")]
+
+[node name="Crate0" parent="." instance=ExtResource("crate")]
+position = Vector3(0, 0, -0.5)
+map_id = 0
+
+[node name="Crate1" parent="." instance=ExtResource("crate")]
+position = Vector3(-12, 0, 2)
+map_id = 1
+
+[node name="Crate2" parent="." instance=ExtResource("crate")]
+position = Vector3(12, 0, -2)
+map_id = 2
+
+[node name="Crate3" parent="." instance=ExtResource("crate")]
+position = Vector3(-8, 0, 6.8)
+map_id = 3
+
+[node name="Crate4" parent="." instance=ExtResource("crate")]
+position = Vector3(8, 0, 6.8)
+map_id = 4
+
+[node name="Crate5" parent="." instance=ExtResource("crate")]
+position = Vector3(0, 3.3, -11.7)
+map_id = 5
+
+[node name="Pickup0" parent="." instance=ExtResource("ammo_pickup")]
+position = Vector3(-4, 0, -5)
+map_id = 0
+
+[node name="Pickup1" parent="." instance=ExtResource("ammo_pickup")]
+position = Vector3(4, 0, 5)
+map_id = 1
+
+[node name="Pickup2" parent="." instance=ExtResource("grenade_pickup")]
+position = Vector3(0, 0, 4.3)
+map_id = 2
+
+[node name="Pickup3" parent="." instance=ExtResource("grenade_pickup")]
+position = Vector3(0, 3.3, -12.75)
+map_id = 3
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Tide" type="Node3D" parent="Spawns"]
+
+[node name="Lane1" type="Marker3D" parent="Spawns/Tide"]
+position = Vector3(-20.3, 0.045, -2.025)
+
+[node name="Lane2" type="Marker3D" parent="Spawns/Tide"]
+position = Vector3(-20.3, 0.045, -0.675)
+
+[node name="Lane3" type="Marker3D" parent="Spawns/Tide"]
+position = Vector3(-20.3, 0.045, 0.675)
+
+[node name="Lane4" type="Marker3D" parent="Spawns/Tide"]
+position = Vector3(-20.3, 0.045, 2.025)
+
+[node name="Ember" type="Node3D" parent="Spawns"]
+
+[node name="Lane1" type="Marker3D" parent="Spawns/Ember"]
+position = Vector3(20.3, 0.045, -2.025)
+
+[node name="Lane2" type="Marker3D" parent="Spawns/Ember"]
+position = Vector3(20.3, 0.045, -0.675)
+
+[node name="Lane3" type="Marker3D" parent="Spawns/Ember"]
+position = Vector3(20.3, 0.045, 0.675)
+
+[node name="Lane4" type="Marker3D" parent="Spawns/Ember"]
+position = Vector3(20.3, 0.045, 2.025)

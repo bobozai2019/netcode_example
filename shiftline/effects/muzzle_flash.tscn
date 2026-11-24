@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="glow"]
+shading_mode = 0
+albedo_color = Color(1, 0.94901961, 0.70196078, 1)
+
+[sub_resource type="BoxMesh" id="mesh"]
+material = SubResource("glow")
+size = Vector3(0.09, 0.09, 0.09)
+
+[node name="MuzzleFlash" type="MeshInstance3D"]
+mesh = SubResource("mesh")
+rotation = Vector3(0.3, 0.4, 0.6)

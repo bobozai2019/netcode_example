@@ -1,0 +1,105 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/quaternius/Pallet.gltf" id="3_dovv1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jxpuc"]
+albedo_color = Color(0.20784314, 0.31764707, 0.3647059, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pixms"]
+albedo_color = Color(0.36078432, 0.4509804, 0.4862745, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hncqx"]
+albedo_color = Color(0.27058825, 0.8509804, 0.8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1h35d"]
+size = Vector3(4.8, 0.012, 5.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rjpwk"]
+size = Vector3(4.5, 0.012, 5.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hn8ik"]
+size = Vector3(0.23, 2.5, 3.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mngl6"]
+size = Vector3(0.23, 2.5, 3.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wc56c"]
+size = Vector3(0.23, 2.5, 2.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gkjgi"]
+size = Vector3(0.23, 2.5, 2.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gotww"]
+size = Vector3(2.2, 2.5, 0.23)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ub6t6"]
+size = Vector3(2.2, 2.5, 0.23)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4hsja"]
+size = Vector3(1.6, 2.5, 0.23)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xy078"]
+size = Vector3(1.6, 2.5, 0.23)
+
+[node name="TideDispatch" type="Node3D"]
+
+[node name="SpawnOutline" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.5, 0.013, 0)
+material_override = SubResource("StandardMaterial3D_hncqx")
+mesh = SubResource("BoxMesh_1h35d")
+
+[node name="SpawnInset" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.5, 0.025, 0)
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_rjpwk")
+
+[node name="TeamSign" type="Label3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -23.73, 2.5, 0)
+pixel_size = 0.008
+modulate = Color(0.27058825, 0.8509804, 0.8, 1)
+text = "01   /   TIDE"
+font_size = 116
+outline_size = 0
+
+[node name="InnerWallNear" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8, 1.25, 9)
+
+[node name="Collision" type="CollisionShape3D" parent="InnerWallNear"]
+shape = SubResource("BoxShape3D_hn8ik")
+
+[node name="Mesh" type="MeshInstance3D" parent="InnerWallNear"]
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_mngl6")
+
+[node name="InnerWallFar" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.8, 1.25, 13.5)
+
+[node name="Collision" type="CollisionShape3D" parent="InnerWallFar"]
+shape = SubResource("BoxShape3D_wc56c")
+
+[node name="Mesh" type="MeshInstance3D" parent="InnerWallFar"]
+material_override = SubResource("StandardMaterial3D_jxpuc")
+mesh = SubResource("BoxMesh_gkjgi")
+
+[node name="EntryWallNear" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.95, 1.25, 7.45)
+
+[node name="Collision" type="CollisionShape3D" parent="EntryWallNear"]
+shape = SubResource("BoxShape3D_gotww")
+
+[node name="Mesh" type="MeshInstance3D" parent="EntryWallNear"]
+material_override = SubResource("StandardMaterial3D_pixms")
+mesh = SubResource("BoxMesh_ub6t6")
+
+[node name="EntryWallFar" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.1, 1.25, 7.45)
+
+[node name="Collision" type="CollisionShape3D" parent="EntryWallFar"]
+shape = SubResource("BoxShape3D_4hsja")
+
+[node name="Mesh" type="MeshInstance3D" parent="EntryWallFar"]
+material_override = SubResource("StandardMaterial3D_pixms")
+mesh = SubResource("BoxMesh_xy078")
+
+[node name="Pallet" parent="." instance=ExtResource("3_dovv1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0.01, 10.4)

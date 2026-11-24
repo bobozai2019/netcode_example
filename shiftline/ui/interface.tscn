@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/interface.gd" id="interface"]
+[ext_resource type="PackedScene" path="res://ui/lobby/lobby.tscn" id="lobby"]
+[ext_resource type="PackedScene" path="res://ui/hud/game_hud.tscn" id="game"]
+
+[node name="Interface" type="CanvasLayer"]
+layer = 3
+script = ExtResource("interface")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Lobby" parent="Root" instance=ExtResource("lobby")]
+
+[node name="Game" parent="Root" instance=ExtResource("game")]
+visible = false

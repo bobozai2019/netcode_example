@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://racing/vehicle.tscn" id="1"]
+
+[node name="Roadster" instance=ExtResource("1")]
+speed = 225.0
+
+[node name="Body" parent="." index="0"]
+color = Color(0.98, 0.64, 0.28, 1)
+polygon = PackedVector2Array(-24,-8, 10,-8, 24,-3, 24,3, 10,8, -24,8)

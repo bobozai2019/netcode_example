@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="glow"]
+shading_mode = 0
+albedo_color = Color(1, 0.79215686, 0.45098039, 1)
+
+[sub_resource type="BoxMesh" id="mesh"]
+material = SubResource("glow")
+size = Vector3(0.015, 0.015, 1)
+
+[node name="Tracer" type="MeshInstance3D"]
+mesh = SubResource("mesh")

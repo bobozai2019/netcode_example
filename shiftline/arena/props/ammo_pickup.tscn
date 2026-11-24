@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://arena/props/pickup.gd" id="1_34xed"]
+[ext_resource type="Script" path="res://addons/netcode/scene_replicator.gd" id="2_ssvfc"]
+[ext_resource type="PackedScene" path="res://assets/shiftline/ammo-pack.glb" id="3_v6dp8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2d54r"]
+albedo_color = Color(0.13333334, 0.20784314, 0.25490198, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_v6kh1"]
+size = Vector3(0.85, 0.15, 0.85)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_drkf1"]
+shading_mode = 0
+albedo_color = Color(0.4392157, 0.9254902, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2yfb4"]
+size = Vector3(0.66, 0.024, 0.66)
+
+[node name="AmmoPickup" type="Node3D"]
+script = ExtResource("1_34xed")
+
+[node name="Sync" type="Node" parent="."]
+script = ExtResource("2_ssvfc")
+root_mode = 0
+layout_key = "shiftline.pickup"
+properties = Array[NodePath]([NodePath(":map_id"), NodePath(":match_id"), NodePath(":kind"), NodePath(":generation"), NodePath(":available"), NodePath(":refresh_at")])
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
+material_override = SubResource("StandardMaterial3D_2d54r")
+mesh = SubResource("BoxMesh_v6kh1")
+
+[node name="Accent" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.159, 0)
+material_override = SubResource("StandardMaterial3D_drkf1")
+mesh = SubResource("BoxMesh_2yfb4")
+
+[node name="Item" type="Node3D" parent="."]
+
+[node name="Model" parent="Item" instance=ExtResource("3_v6dp8")]

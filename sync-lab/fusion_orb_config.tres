@@ -1,0 +1,13 @@
+[gd_resource type="FusionReplicationConfig" format=3]
+
+[resource]
+properties/0/path = NodePath(".:version")
+properties/1/path = NodePath(".:energy")
+properties/2/path = NodePath(".:active")
+properties/3/path = NodePath(".:label")
+properties/4/path = NodePath(".:offset")
+properties/5/path = NodePath(".:trail")
+properties/5/max_array_capacity = 4
+properties/6/path = NodePath(".:tags")
+properties/6/max_array_capacity = 4
+properties/7/path = NodePath(".:sent_at")

@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://arena/props/pickup.gd" id="1_rwv5u"]
+[ext_resource type="Script" path="res://addons/netcode/scene_replicator.gd" id="2_akett"]
+[ext_resource type="PackedScene" path="res://assets/quaternius/Grenade.gltf" id="3_f85yu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_66b2m"]
+albedo_color = Color(0.13333334, 0.20784314, 0.25490198, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_15pmk"]
+size = Vector3(0.85, 0.15, 0.85)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pemmm"]
+shading_mode = 0
+albedo_color = Color(0.7294118, 0.87058824, 0.39607844, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pqfdy"]
+size = Vector3(0.66, 0.024, 0.66)
+
+[node name="GrenadePickup" type="Node3D"]
+script = ExtResource("1_rwv5u")
+kind = 1
+
+[node name="Sync" type="Node" parent="."]
+script = ExtResource("2_akett")
+root_mode = 0
+layout_key = "shiftline.pickup"
+properties = Array[NodePath]([NodePath(":map_id"), NodePath(":match_id"), NodePath(":kind"), NodePath(":generation"), NodePath(":available"), NodePath(":refresh_at")])
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
+material_override = SubResource("StandardMaterial3D_66b2m")
+mesh = SubResource("BoxMesh_15pmk")
+
+[node name="Accent" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.159, 0)
+material_override = SubResource("StandardMaterial3D_pemmm")
+mesh = SubResource("BoxMesh_pqfdy")
+
+[node name="Item" type="Node3D" parent="."]
+
+[node name="Model" parent="Item" instance=ExtResource("3_f85yu")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0.39, 0)

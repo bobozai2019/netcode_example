@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/player/player.gd" id="1_xbdde"]
+[ext_resource type="Script" path="res://addons/netcode/scene_replicator.gd" id="2_jp467"]
+[ext_resource type="PackedScene" path="res://actors/player/soldier.tscn" id="3_soldier"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_h4cat"]
+resource_local_to_scene = true
+radius = 0.32
+height = 1.84
+
+[node name="PlayerSlot" type="CharacterBody3D"]
+collision_layer = 0
+collision_mask = 3
+floor_snap_length = 0.32
+script = ExtResource("1_xbdde")
+
+[node name="Sync" type="Node" parent="."]
+script = ExtResource("2_jp467")
+root_mode = 0
+layout_key = "shiftline.player"
+properties = Array[NodePath]([NodePath(":slot_index"), NodePath(":player_id"), NodePath(":life_id"), NodePath(":match_id"), NodePath(":team"), NodePath(":hp"), NodePath(":kills"), NodePath(":deaths"), NodePath(":magazine"), NodePath(":reserve"), NodePath(":grenades"), NodePath(":pose"), NodePath(":action"), NodePath(":action_seq"), NodePath(":ack_input_seq"), NodePath(":ping_ms"), NodePath(":nickname"), NodePath(":active"), NodePath(":alive"), NodePath(":position"), NodePath(":velocity"), NodePath(":yaw"), NodePath(":pitch"), NodePath(":action_until"), NodePath(":respawn_at")])
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+shape = SubResource("CapsuleShape3D_h4cat")
+
+[node name="Soldier" parent="." instance=ExtResource("3_soldier")]
+top_level = true
+visible = false

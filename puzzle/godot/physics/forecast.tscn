@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://verification/physics/forecast.gd" id="1"]
+
+[sub_resource type="CircleShape2D" id="BodyShape"]
+radius = 20.0
+
+[sub_resource type="RectangleShape2D" id="WallShape"]
+size = Vector2(10, 200)
+
+[node name="Forecast" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Body" type="RigidBody2D" parent="."]
+gravity_scale = 0.0
+linear_damp_mode = 1
+linear_damp = 0.0
+max_contacts_reported = 4
+contact_monitor = true
+
+[node name="Collision" type="CollisionShape2D" parent="Body"]
+shape = SubResource("BodyShape")
+
+[node name="Wall" type="StaticBody2D" parent="."]
+position = Vector2(150, 0)
+
+[node name="Collision" type="CollisionShape2D" parent="Wall"]
+shape = SubResource("WallShape")
+
+[connection signal="body_entered" from="Body" to="." method="_on_body_entered"]

@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://orb.gd" id="Orb"]
+[ext_resource type="NetcodeReplicationConfig" path="res://netcode_orb_config.tres" id="Config"]
+
+[node name="Orb" type="Node2D"]
+script = ExtResource("Orb")
+
+[node name="Sync" type="NetcodeSharedReplicator" parent="."]
+owner_mode = 1
+replication_config = ExtResource("Config")

@@ -1,0 +1,239 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/viewmodel/viewmodel.gd" id="1_5fkwo"]
+[ext_resource type="PackedScene" path="res://assets/wrad-arms/arms.glb" id="2_obxrh"]
+[ext_resource type="Shader" path="res://actors/viewmodel/sleeves.gdshader" id="3_u65ff"]
+[ext_resource type="PackedScene" path="res://assets/shiftline/rifle.glb" id="4_nyaoy"]
+[ext_resource type="PackedScene" path="res://assets/quaternius/Grenade.gltf" id="5_ef5jr"]
+[ext_resource type="ArrayMesh" path="res://actors/viewmodel/sleeves.mesh" id="6_sleeves"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hl5a"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("3_u65ff")
+shader_parameter/skin_tint = null
+shader_parameter/fabric_tint = null
+
+[sub_resource type="Skin" id="Skin_84m3e"]
+resource_name = "Skin"
+bind_count = 50
+bind/0/name = &"root"
+bind/0/bone = -1
+bind/0/pose = Transform3D(-2.8212997e-07, 0, 1, 0, 1.0000001, 0, -1, 0, -2.8212997e-07, 2.8878112e-08, 1.0000001, -3.7869073e-15)
+bind/1/name = &"bicep.r"
+bind/1/bone = -1
+bind/1/pose = Transform3D(0.72835284, 0.68513453, 0.009638788, 0.6803385, -0.72143763, -0.12910293, -0.08149903, 0.10059008, -0.99158436, -1.4101825, -1.2994884, 0.15548418)
+bind/2/name = &"bicep.r"
+bind/2/bone = -1
+bind/2/pose = Transform3D(0.72835284, 0.68513453, 0.009638788, 0.6803385, -0.72143763, -0.12910293, -0.08149903, 0.10059008, -0.99158436, -1.4101825, -1.2994884, 0.15548418)
+bind/3/name = &"forearm.r"
+bind/3/bone = -1
+bind/3/pose = Transform3D(0.7874433, 0.60507977, 0.11752374, 0.45240214, -0.43784806, -0.7769309, -0.4186477, 0.6649568, -0.6185196, -1.7484224, -2.8083975, 2.635051)
+bind/4/name = &"wrist.r"
+bind/4/bone = -1
+bind/4/pose = Transform3D(0.7845312, 0.6109602, 0.106013246, 0.44869766, -0.44132683, -0.7771109, -0.42799738, 0.65723544, -0.62037086, -1.7428974, -5.319743, 2.6531358)
+bind/5/name = &"finger_pinky1.r"
+bind/5/bone = -1
+bind/5/pose = Transform3D(0.9351528, 0.33147702, -0.12495049, 0.23885016, -0.85048884, -0.46863577, -0.2616111, 0.4084017, -0.8745101, -4.1031637, -5.4080563, 0.5367963)
+bind/6/name = &"finger_pinky2.r"
+bind/6/bone = -1
+bind/6/pose = Transform3D(0.949912, 0.21913834, -0.22281402, 0.11863108, -0.9124411, -0.3916351, -0.28912705, 0.34558633, -0.89273494, -4.8757358, -5.158512, 0.39691055)
+bind/7/name = &"finger_pinky3.r"
+bind/7/bone = -1
+bind/7/pose = Transform3D(0.94858664, 0.2048841, -0.24126032, 0.12396141, -0.9418197, -0.31242517, -0.2912347, 0.2664554, -0.9187948, -4.978919, -5.362776, 0.014399773)
+bind/8/name = &"finger_ring1.r"
+bind/8/bone = -1
+bind/8/pose = Transform3D(0.9594236, 0.25870085, -0.11216364, 0.14638904, -0.79697335, -0.5860064, -0.24099192, 0.5458089, -0.8025058, -4.5054054, -5.0950966, 0.9005388)
+bind/9/name = &"finger_ring2.r"
+bind/9/bone = -1
+bind/9/pose = Transform3D(0.94937223, 0.27642703, -0.14926845, 0.16333012, -0.8401866, -0.51711696, -0.26835853, 0.46655637, -0.8427984, -4.496998, -5.469207, 0.63791925)
+bind/10/name = &"finger_ring3.r"
+bind/10/bone = -1
+bind/10/pose = Transform3D(0.9341992, 0.33251867, -0.12924272, 0.22373727, -0.8282601, -0.51373786, -0.27787414, 0.45101708, -0.84815663, -4.1295624, -6.1119914, 0.61074007)
+bind/11/name = &"finger_middle1.r"
+bind/11/bone = -1
+bind/11/pose = Transform3D(0.7709189, 0.53409415, -0.3470271, 0.20542245, -0.72421634, -0.6582647, -0.6028981, 0.43618143, -0.6680267, -3.2689495, -5.3660903, 2.6170604)
+bind/12/name = &"finger_middle2.r"
+bind/12/bone = -1
+bind/12/pose = Transform3D(0.7748415, 0.37689805, -0.50751245, 0.034141447, -0.82660645, -0.56174403, -0.6312334, 0.41793522, -0.6533564, -4.3570347, -4.8991523, 2.7482018)
+bind/13/name = &"finger_middle3.r"
+bind/13/bone = -1
+bind/13/pose = Transform3D(0.785859, 0.5215991, -0.33220544, 0.2367021, -0.74999636, -0.61763895, -0.5713129, 0.4067433, -0.71285456, -3.2535055, -6.283925, 2.184812)
+bind/14/name = &"finger_index1.r"
+bind/14/bone = -1
+bind/14/pose = Transform3D(0.7293913, 0.59428644, -0.3388395, 0.10129092, -0.5836688, -0.8056492, -0.67655677, 0.5533122, -0.4859187, -2.8400137, -4.7830405, 3.7415123)
+bind/15/name = &"finger_index2.r"
+bind/15/bone = -1
+bind/15/pose = Transform3D(0.6927107, 0.45986778, -0.5555841, -0.086261526, -0.7119852, -0.69687593, -0.71603864, 0.5306589, -0.45353073, -3.8342881, -4.3158255, 3.9746218)
+bind/16/name = &"finger_index3.r"
+bind/16/bone = -1
+bind/16/pose = Transform3D(0.69489944, 0.56664073, -0.4427562, 0.060866393, -0.65984035, -0.74893665, -0.71652675, 0.49348667, -0.49301195, -3.0552616, -5.377586, 3.7012968)
+bind/17/name = &"finger_thumb1.r"
+bind/17/bone = -1
+bind/17/pose = Transform3D(0.95436215, 0.019538134, -0.2980128, -0.28736943, -0.2116143, -0.9341511, -0.08131544, 0.97715807, -0.19634187, -5.2989035, -1.6757843, 2.7958322)
+bind/18/name = &"finger_thumb2.r"
+bind/18/bone = -1
+bind/18/pose = Transform3D(0.9137359, 0.11682001, -0.38915324, -0.27866027, -0.5168531, -0.80945134, -0.29569528, 0.84806615, -0.4397139, -5.080766, -2.6842616, 2.6816485)
+bind/19/name = &"finger_thumb3.r"
+bind/19/bone = -1
+bind/19/pose = Transform3D(0.93201864, 0.071305744, -0.35532707, -0.21036388, -0.69193137, -0.69063616, -0.29510835, 0.7184335, -0.62989247, -5.2030964, -3.4628456, 1.6541033)
+bind/20/name = &"socket.r"
+bind/20/bone = -1
+bind/20/pose = Transform3D(0.45968786, -0.52106315, 0.7191526, 0.40775254, -0.59554714, -0.69214284, 0.7889395, 0.61140585, -0.06130097, -2.060519, -6.1037917, -1.9551339)
+bind/21/name = &"forearm.Twist0.r"
+bind/21/bone = -1
+bind/21/pose = Transform3D(0.78253776, 0.61274666, 0.11034696, 0.45240226, -0.43784767, -0.77693105, -0.42774683, 0.6578989, -0.6198401, -1.7177618, -2.8083973, 2.6551406)
+bind/22/name = &"forearm.Twist1.r"
+bind/22/bone = -1
+bind/22/pose = Transform3D(0.7775272, 0.6203313, 0.10315478, 0.4524022, -0.43784785, -0.7769309, -0.43678853, 0.6507521, -0.6210776, -1.6868707, -4.0676556, 2.6748722)
+bind/23/name = &"wrist_ik.r"
+bind/23/bone = -1
+bind/23/pose = Transform3D(0.7845311, 0.61096007, 0.10601327, 0.44869724, -0.44132674, -0.777111, -0.4279973, 0.6572357, -0.62037057, -1.7428976, -5.3197403, 2.6531363)
+bind/24/name = &"arm_target.r"
+bind/24/bone = -1
+bind/24/pose = Transform3D(0.724043, 0.68975186, -0.002020702, 0.090383664, -0.09197196, 0.991651, 0.6838073, -0.71818084, -0.12893397, -1.4019748, -1.8082807, -3.991032)
+bind/25/name = &"head"
+bind/25/bone = -1
+bind/25/pose = Transform3D(-5.205486e-07, 1.0000001, 0, 4.1434278e-20, -7.959734e-14, -1, -1, -5.2054867e-07, 0, -1.5000001, -2.8877993e-08, 7.80823e-07)
+bind/26/name = &"bicep.l"
+bind/26/bone = -1
+bind/26/pose = Transform3D(0.7283528, -0.6851345, -0.009638816, -0.68033826, -0.72143763, -0.12910286, 0.08149909, 0.10059008, -0.99158436, 1.4101824, -1.299488, 0.15548429)
+bind/27/name = &"bicep.l"
+bind/27/bone = -1
+bind/27/pose = Transform3D(0.7283528, -0.6851345, -0.009638816, -0.68033826, -0.72143763, -0.12910286, 0.08149909, 0.10059008, -0.99158436, 1.4101824, -1.299488, 0.15548429)
+bind/28/name = &"forearm.l"
+bind/28/bone = -1
+bind/28/pose = Transform3D(0.78744334, -0.60507965, -0.11752373, -0.45240176, -0.43784794, -0.77693105, 0.41864774, 0.66495687, -0.6185196, 1.7484226, -2.8083959, 2.635051)
+bind/29/name = &"wrist.l"
+bind/29/bone = -1
+bind/29/pose = Transform3D(0.7845311, -0.61096007, -0.10601328, -0.4486974, -0.44132662, -0.777111, 0.4279974, 0.65723544, -0.6203708, 1.7428967, -5.3197412, 2.6531355)
+bind/30/name = &"finger_pinky1.l"
+bind/30/bone = -1
+bind/30/pose = Transform3D(0.93515265, -0.331477, 0.1249504, -0.23885001, -0.8504888, -0.46863595, 0.26161116, 0.40840173, -0.8745102, 4.1031623, -5.4080544, 0.53679633)
+bind/31/name = &"finger_pinky2.l"
+bind/31/bone = -1
+bind/31/pose = Transform3D(0.94991183, -0.21913835, 0.22281396, -0.11863103, -0.9124411, -0.3916353, 0.28912708, 0.3455863, -0.8927352, 4.875735, -5.1585107, 0.3969105)
+bind/32/name = &"finger_pinky3.l"
+bind/32/bone = -1
+bind/32/pose = Transform3D(0.9485864, -0.20488401, 0.24126026, -0.12396128, -0.94181955, -0.31242537, 0.29123473, 0.26645547, -0.9187949, 4.978917, -5.362775, 0.014400367)
+bind/33/name = &"finger_ring1.l"
+bind/33/bone = -1
+bind/33/pose = Transform3D(0.9594234, -0.25870076, 0.1121636, -0.14638886, -0.7969734, -0.58600664, 0.24099186, 0.54580885, -0.80250597, 4.505405, -5.095095, 0.9005376)
+bind/34/name = &"finger_ring2.l"
+bind/34/bone = -1
+bind/34/pose = Transform3D(0.949372, -0.27642697, 0.14926845, -0.1633299, -0.84018636, -0.51711714, 0.26835853, 0.4665564, -0.84279823, 4.4969964, -5.4692044, 0.6379195)
+bind/35/name = &"finger_ring3.l"
+bind/35/bone = -1
+bind/35/pose = Transform3D(0.934199, -0.3325186, 0.12924267, -0.22373706, -0.82826, -0.5137379, 0.27787414, 0.45101705, -0.84815663, 4.1295605, -6.1119885, 0.61073977)
+bind/36/name = &"finger_middle1.l"
+bind/36/bone = -1
+bind/36/pose = Transform3D(0.7709188, -0.5340941, 0.3470271, -0.20542228, -0.7242161, -0.65826494, 0.6028981, 0.4361815, -0.6680268, 3.2689493, -5.366089, 2.6170604)
+bind/37/name = &"finger_middle2.l"
+bind/37/bone = -1
+bind/37/pose = Transform3D(0.77484137, -0.376898, 0.50751245, -0.03414129, -0.8266063, -0.56174415, 0.6312333, 0.4179353, -0.65335655, 4.357035, -4.8991513, 2.7482011)
+bind/38/name = &"finger_middle3.l"
+bind/38/bone = -1
+bind/38/pose = Transform3D(0.7858587, -0.521599, 0.33220536, -0.23670189, -0.7499961, -0.61763924, 0.5713129, 0.40674332, -0.7128546, 3.253505, -6.2839236, 2.1848118)
+bind/39/name = &"finger_index1.l"
+bind/39/bone = -1
+bind/39/pose = Transform3D(0.72939116, -0.59428644, 0.3388395, -0.10129075, -0.5836687, -0.8056494, 0.6765567, 0.5533121, -0.48591876, 2.8400133, -4.7830396, 3.741511)
+bind/40/name = &"finger_index2.l"
+bind/40/bone = -1
+bind/40/pose = Transform3D(0.6927106, -0.45986766, 0.555584, 0.08626171, -0.7119848, -0.696876, 0.7160384, 0.53065896, -0.45353076, 3.8342872, -4.315823, 3.9746199)
+bind/41/name = &"finger_index3.l"
+bind/41/bone = -1
+bind/41/pose = Transform3D(0.6948994, -0.56664073, 0.44275606, -0.060866244, -0.65984, -0.7489367, 0.71652657, 0.49348676, -0.493012, 3.0552604, -5.3775835, 3.7012951)
+bind/42/name = &"finger_thumb1.l"
+bind/42/bone = -1
+bind/42/pose = Transform3D(0.9543619, -0.019538129, 0.2980128, 0.28736955, -0.21161413, -0.9341513, 0.08131533, 0.97715783, -0.1963419, 5.298901, -1.6757838, 2.7958305)
+bind/43/name = &"finger_thumb2.l"
+bind/43/bone = -1
+bind/43/pose = Transform3D(0.91373575, -0.11682, 0.38915318, 0.27866033, -0.5168528, -0.8094516, 0.29569513, 0.84806615, -0.43971393, 5.080765, -2.6842608, 2.6816473)
+bind/44/name = &"finger_thumb3.l"
+bind/44/bone = -1
+bind/44/pose = Transform3D(0.9320183, -0.071305685, 0.35532692, 0.21036391, -0.6919309, -0.6906362, 0.2951081, 0.7184335, -0.6298924, 5.203094, -3.4628434, 1.6541015)
+bind/45/name = &"socket.l"
+bind/45/bone = -1
+bind/45/pose = Transform3D(0.4596879, 0.52106315, -0.7191527, -0.40775242, -0.5955469, -0.6921429, -0.78893924, 0.6114058, -0.061300837, 2.060518, -6.10379, -1.9551326)
+bind/46/name = &"forearm.Twist0.l"
+bind/46/bone = -1
+bind/46/pose = Transform3D(0.78253764, -0.6127466, -0.11034697, -0.45240197, -0.4378475, -0.77693105, 0.42774683, 0.65789884, -0.6198401, 1.717761, -2.8083959, 2.65514)
+bind/47/name = &"forearm.Twist1.l"
+bind/47/bone = -1
+bind/47/pose = Transform3D(0.77752703, -0.6203312, -0.103154786, -0.4524019, -0.43784767, -0.7769311, 0.43678856, 0.6507521, -0.6210777, 1.6868702, -4.067653, 2.6748722)
+bind/48/name = &"wrist_ik.l"
+bind/48/bone = -1
+bind/48/pose = Transform3D(0.784531, -0.61096036, -0.10601338, -0.44869748, -0.44132683, -0.77711105, 0.42799732, 0.65723574, -0.6203707, 1.7428958, -5.3197417, 2.6531365)
+bind/49/name = &"arm_target.l"
+bind/49/bone = -1
+bind/49/pose = Transform3D(0.7240431, -0.6897518, 0.0020206945, -0.090383604, -0.091971956, 0.99165106, -0.6838073, -0.71818084, -0.12893392, 1.4019752, -1.8082806, -3.991032)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h1jab"]
+shading_mode = 0
+albedo_color = Color(1, 0.9529412, 0.64705884, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ax54t"]
+size = Vector3(0.085, 0.062, 0.062)
+
+[node name="Viewmodel" type="Node3D"]
+script = ExtResource("1_5fkwo")
+
+[node name="Arms" parent="." instance=ExtResource("2_obxrh")]
+transform = Transform3D(0.115, 0, 0, 0, 0.115, 0, 0, 0, 0.115, 0.18, -0.3, -0.27)
+
+[node name="Skeleton3D" parent="Arms/arms" index="0"]
+bones/5/rotation = Quaternion(0.111519426, 0.07460967, 0.18157338, 0.9741806)
+bones/6/rotation = Quaternion(0.28101322, 0.0032352582, 0.0747884, 0.95677996)
+bones/7/rotation = Quaternion(0.27037954, -0.003026615, 0.011275681, 0.962683)
+bones/8/rotation = Quaternion(0.1767865, 0.12386605, 0.18768589, 0.9582159)
+bones/9/rotation = Quaternion(0.270046, -0.019333316, 0.008615454, 0.9626147)
+bones/10/rotation = Quaternion(0.30305922, -0.015464996, -0.026555885, 0.9524761)
+bones/11/rotation = Quaternion(0.2492753, -0.06739245, 0.21975684, 0.9407587)
+bones/12/rotation = Quaternion(0.30699143, 0.016884666, 0.11106438, 0.94505864)
+bones/13/rotation = Quaternion(0.28279534, -0.0017501973, -0.11377621, 0.95240676)
+bones/14/rotation = Quaternion(0.263823, -0.09694758, 0.20224807, 0.9381334)
+bones/15/rotation = Quaternion(0.21162821, -0.00063603, 0.12883171, 0.9688217)
+bones/16/rotation = Quaternion(0.18123475, -0.016050182, -0.07600159, 0.98036736)
+bones/30/rotation = Quaternion(-0.4838227, 0.0466863, -0.19067216, 0.85286576)
+bones/31/rotation = Quaternion(-0.3366155, 0.041447006, -0.06233709, 0.93866193)
+bones/32/rotation = Quaternion(-0.3486855, 0.009088606, -0.007327985, 0.9371671)
+bones/33/rotation = Quaternion(-0.42167962, 0.010486942, -0.22463045, 0.87841755)
+bones/34/rotation = Quaternion(-0.3489148, 0.020697633, 0.0044286232, 0.93691534)
+bones/35/rotation = Quaternion(-0.31626618, -0.0031491267, 0.030569004, 0.9481726)
+bones/36/rotation = Quaternion(-0.35282183, 0.18392351, -0.13786563, 0.9070181)
+bones/37/rotation = Quaternion(-0.30871886, 0.051789694, -0.09969062, 0.94449574)
+bones/38/rotation = Quaternion(-0.332599, -0.0656164, 0.09296548, 0.9361783)
+bones/39/rotation = Quaternion(-0.14163989, 0.17099053, -0.14513913, 0.9641758)
+bones/40/rotation = Quaternion(-0.20181173, 0.053113144, -0.1173755, 0.970914)
+bones/41/rotation = Quaternion(-0.2342716, -0.0163352, 0.07594091, 0.969063)
+
+[node name="arms_mesh" parent="Arms/arms/Skeleton3D" index="0"]
+material_override = SubResource("ShaderMaterial_7hl5a")
+cast_shadow = 0
+mesh = ExtResource("6_sleeves")
+skin = SubResource("Skin_84m3e")
+
+[node name="Rifle" parent="." instance=ExtResource("4_nyaoy")]
+transform = Transform3D(-2.6663947e-08, 0, -0.61, 0, 0.61, 0, 0.61, 0, -2.6663947e-08, 0.24, -0.24, -0.58)
+
+[node name="RifleReceiver" parent="Rifle" index="0"]
+cast_shadow = 0
+
+[node name="Magazine" parent="Rifle" index="1"]
+cast_shadow = 0
+
+[node name="MuzzleFlash" type="MeshInstance3D" parent="Rifle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0849999, 0.244, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_h1jab")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_ax54t")
+
+[node name="Grenade" parent="." instance=ExtResource("5_ef5jr")]
+transform = Transform3D(0.36, 0, 0, 0, 0.36, 0, 0, 0, 0.36, 0.16, -0.24, -0.48)
+visible = false
+
+[editable path="Arms"]
+[editable path="Rifle"]
+
+[editable path="Rifle"]

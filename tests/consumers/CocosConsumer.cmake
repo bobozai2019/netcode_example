@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.21)
+project(InstalledCocosConsumer LANGUAGES CXX)
+find_package(ZLIB REQUIRED)
+find_package(PNG REQUIRED)
+find_package(Freetype REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+include("${NETCODE_HOST_TARGETS}")
+find_package(NetcodeCocos CONFIG REQUIRED)
+add_executable(consumer cocos_main.cpp)
+target_link_libraries(consumer PRIVATE Netcode::Cocos)
+add_custom_command(TARGET consumer POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_CURRENT_SOURCE_DIR}/components.cfg" "$<TARGET_FILE_DIR:consumer>/components.cfg")

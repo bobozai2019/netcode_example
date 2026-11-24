@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://netcode_global.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://netcode_area1.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://netcode_area2.tscn" id="3"]
+
+[node name="Spawner" type="NetcodeSpawner"]
+spawnable_scenes = Array[PackedScene]([ExtResource("1"), ExtResource("2"), ExtResource("3")])

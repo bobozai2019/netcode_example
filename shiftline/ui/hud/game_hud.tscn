@@ -1,0 +1,351 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://ui/shiftline_theme.tres" id="theme"]
+[ext_resource type="PackedScene" path="res://ui/hud/roster_row.tscn" id="row"]
+
+[sub_resource type="StyleBoxFlat" id="hud_panel"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.06, 0.12, 0.16, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.21568628, 0.34117648, 0.38039216, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gvkt7"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.15686275, 0.47843137, 0.45882353, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.27058825, 0.8509804, 0.8, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00mly"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.20392157, 0.5529412, 0.5254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4164706, 0.88078433, 0.84000003, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[node name="Game" type="Control"]
+theme = ExtResource("theme")
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="TopBar" type="PanelContainer" parent="."]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -333.0
+offset_top = 17.0
+offset_right = 333.0
+offset_bottom = 77.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("hud_panel")
+
+[node name="Status" type="HBoxContainer" parent="TopBar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Endpoint" type="Label" parent="TopBar/Status"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+theme_override_font_sizes/font_size = 14
+
+[node name="Scores" type="Label" parent="TopBar/Status"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.92941177, 0.972549, 0.9764706, 1)
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+
+[node name="Occupants" type="Label" parent="TopBar/Status"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 2
+
+[node name="HealthPanel" type="PanelContainer" parent="."]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 21.0
+offset_top = -83.0
+offset_right = 176.0
+offset_bottom = -21.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("hud_panel")
+
+[node name="Health" type="Label" parent="HealthPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.27058825, 0.8509804, 0.8, 1)
+theme_override_font_sizes/font_size = 24
+
+[node name="LoadoutPanel" type="PanelContainer" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -215.0
+offset_top = -117.0
+offset_right = -21.0
+offset_bottom = -21.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("hud_panel")
+
+[node name="Loadout" type="VBoxContainer" parent="LoadoutPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="Ammo" type="Label" parent="LoadoutPanel/Loadout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92941177, 0.972549, 0.9764706, 1)
+theme_override_font_sizes/font_size = 25
+
+[node name="Supplies" type="Label" parent="LoadoutPanel/Loadout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+theme_override_font_sizes/font_size = 14
+
+[node name="Hint" type="Label" parent="."]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -84.0
+offset_right = 300.0
+offset_bottom = -53.0
+theme_override_colors/font_color = Color(0.92941177, 0.972549, 0.9764706, 1)
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 1
+
+[node name="Crosshair" type="Label" parent="."]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.0
+offset_top = -31.0
+offset_right = 31.0
+offset_bottom = 31.0
+theme_override_colors/font_color = Color(0.9254902, 1, 0.9843137, 1)
+theme_override_colors/font_outline_color = Color(0.08235294, 0.14509805, 0.19215687, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Marker" type="Label" parent="."]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.0
+offset_top = -31.0
+offset_right = 31.0
+offset_bottom = 31.0
+theme_override_colors/font_color = Color(1, 0.75686276, 0.39607844, 1)
+theme_override_colors/font_outline_color = Color(0.08235294, 0.14509805, 0.19215687, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 37
+text = "×"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Roster" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="RosterPanel" type="PanelContainer" parent="Roster"]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -212.0
+offset_right = 310.0
+offset_bottom = 170.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("hud_panel")
+
+[node name="Table" type="VBoxContainer" parent="Roster/RosterPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Players" type="Label" parent="Roster/RosterPanel/Table"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 26
+text = "Players"
+
+[node name="Heading" parent="Roster/RosterPanel/Table" instance=ExtResource("row")]
+layout_mode = 2
+
+[node name="Team" parent="Roster/RosterPanel/Table/Heading" index="0"]
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+text = "TEAM"
+
+[node name="Nickname" parent="Roster/RosterPanel/Table/Heading" index="1"]
+text = "NICKNAME"
+
+[node name="Kills" parent="Roster/RosterPanel/Table/Heading" index="2"]
+text = "KILLS"
+
+[node name="Deaths" parent="Roster/RosterPanel/Table/Heading" index="3"]
+text = "DEATHS"
+
+[node name="Ping" parent="Roster/RosterPanel/Table/Heading" index="4"]
+text = "PING"
+
+[node name="Entries" type="VBoxContainer" parent="Roster/RosterPanel/Table"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Results" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="ResultsPanel" type="PanelContainer" parent="Results"]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -235.0
+offset_top = 88.0
+offset_right = 235.0
+offset_bottom = 206.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("hud_panel")
+
+[node name="Outcome" type="VBoxContainer" parent="Results/ResultsPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="WinnerLabel" type="Label" parent="Results/ResultsPanel/Outcome"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92941177, 0.972549, 0.9764706, 1)
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+
+[node name="Countdown" type="Label" parent="Results/ResultsPanel/Outcome"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 1
+
+[node name="Menu" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Backdrop" type="ColorRect" parent="Menu"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.02, 0.05, 0.07, 0.72)
+
+[node name="MenuPanel" type="PanelContainer" parent="Menu"]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -182.5
+offset_top = -142.0
+offset_right = 182.5
+offset_bottom = 142.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("hud_panel")
+
+[node name="MenuItems" type="VBoxContainer" parent="Menu/MenuPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Menu/MenuPanel/MenuItems"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92941177, 0.972549, 0.9764706, 1)
+theme_override_font_sizes/font_size = 29
+text = "Room menu"
+
+[node name="Movement" type="Label" parent="Menu/MenuPanel/MenuItems"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+theme_override_font_sizes/font_size = 14
+text = "WASD move   ·   Shift crouch   ·   Space jump"
+
+[node name="Actions" type="Label" parent="Menu/MenuPanel/MenuItems"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+theme_override_font_sizes/font_size = 14
+text = "LMB fire   ·   R reload   ·   G throw   ·   E supply"
+
+[node name="Interface" type="Label" parent="Menu/MenuPanel/MenuItems"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57254905, 0.68235296, 0.7176471, 1)
+theme_override_font_sizes/font_size = 14
+text = "Tab roster   ·   F1 interface   ·   Esc menu"
+
+[node name="ContinueButton" type="Button" parent="Menu/MenuPanel/MenuItems"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_gvkt7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_00mly")
+text = "Continue"
+
+[node name="LeaveButton" type="Button" parent="Menu/MenuPanel/MenuItems"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Leave room"
+
+[editable path="Roster/RosterPanel/Table/Heading"]
