@@ -101,9 +101,9 @@ def run(work, godot, backend, count, seconds, windowed=False):
                     sleep(0.1)
                 if not ready.is_file() or ready.read_text(encoding="utf-8").strip() != "ready":
                     raise RuntimeError("The host did not open a room")
-        # Godot's quit limit counts rendered frames. A loaded window may take
-        # longer than the nominal duration to reach the limit.
-        timeout = (seconds * 2 if windowed else seconds) + 15
+        # Godot's quit limit counts frames even in headless mode. A heavily
+        # loaded process may take longer than the nominal duration to reach it.
+        timeout = seconds * 2 + 15
         for role, process in jobs.items():
             status[role] = process.wait(timeout=timeout)
     finally:
