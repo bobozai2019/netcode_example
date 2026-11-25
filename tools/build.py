@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 from zipfile import ZipFile
@@ -13,6 +14,7 @@ import zlib
 from artifacts import GIB, ROOT, budget, create_job, item_at, job_lock, owned
 from godot_build import GODOT_PROJECT, import_project, resolve_godot, sdk_sources
 from prepare_godot_yard import sync
+from sdk_inputs import LOCK, release_archive
 from unity_build import build_unity_player, resolve_unity
 
 
@@ -86,6 +88,32 @@ def install_dependencies(build, vcpkg):
         f"--x-packages-root={build / 'vcpkg-packages'}", env=env)
 
 
+def cocos_sdk_prefixes(installed, build):
+    core, cocos = (installed / product for product in ("core", "cocos"))
+    core_config = core / "lib/cmake/NetcodeCore/NetcodeCoreConfig.cmake"
+    cocos_config = cocos / "lib/cmake/NetcodeCocos/NetcodeCocosConfig.cmake"
+    if core_config.is_file() and cocos_config.is_file():
+        core_id = re.search(r'set\(NetcodeCore_BUILD_ID "([^"]+)"\)', core_config.read_text(encoding="utf-8"))
+        required_id = re.search(r'if\(NOT NetcodeCore_BUILD_ID STREQUAL "([^"]+)"\)',
+                                cocos_config.read_text(encoding="utf-8"))
+        if not core_id or not required_id or core_id[1] == required_id[1]:
+            return core, cocos
+
+    archives = {product: release_archive(product) for product in ("core", "cocos")}
+    prefixes = {}
+    for product, archive in archives.items():
+        checksum = LOCK["packages"][product]["sha256"]
+        prefix = item_at(build, Path("sdk") / product / checksum)
+        ready = prefix / ".extracted"
+        if not ready.is_file():
+            with ZipFile(archive) as package:
+                package.extractall(prefix)
+            ready.touch()
+        prefixes[product] = prefix
+    print("Using the locked Release Core and Cocos SDKs", flush=True)
+    return prefixes["core"], prefixes["cocos"]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cocos", action="store_true")
@@ -101,7 +129,7 @@ def main():
     parser.add_argument("--cmake", type=Path)
     parser.add_argument("--vcpkg", type=Path)
     parser.add_argument("--fresh", action="store_true", help="Recreate CMake's configure cache")
-    parser.add_argument("--sdk-root", type=Path, default=REPO.parent / "netcode/out/install/win-x64-msvc-mt",
+    parser.add_argument("--sdk-root", type=Path,
                         help="Directory containing Release/core, Release/cocos, Release/godot, Release/unity")
     local_sdk = REPO.parent / "netcode/out"
     legacy = local_sdk / "build/win-x64/Release"
@@ -132,9 +160,14 @@ def main():
         build = create_job(ROOT, relative, "build")
     with job_lock(build, "build"):
         source = REPO
-        config_sdk = args.sdk_root.resolve() / config
-        if not (config_sdk / "core/lib/cmake/NetcodeCore/NetcodeCoreConfig.cmake").is_file():
-            parser.error(f"Missing installed {config} Core SDK at {config_sdk}. Build or supply --sdk-root.")
+        sdk_root = args.sdk_root or REPO.parent / "netcode/out/install/win-x64-msvc-mt"
+        config_sdk = sdk_root.resolve() / config
+        core_sdk = config_sdk / "core"
+        cocos_sdk = config_sdk / "cocos"
+        if args.cocos and args.sdk_root is None and args.steam_sdk is None:
+            core_sdk, cocos_sdk = cocos_sdk_prefixes(config_sdk, build)
+        if not (core_sdk / "lib/cmake/NetcodeCore/NetcodeCoreConfig.cmake").is_file():
+            parser.error(f"Missing installed {config} Core SDK at {core_sdk}. Build or supply --sdk-root.")
         deps = args.deps_cache.resolve()
         deps.mkdir(parents=True, exist_ok=True)
         options = ["--fresh"] if args.fresh else []
@@ -145,8 +178,8 @@ def main():
                 f"-DNETCODE_UNITY={'ON' if args.unity else 'OFF'}",
                 f"-DCMAKE_MSVC_RUNTIME_LIBRARY={'MultiThreadedDebug' if config=='Debug' else 'MultiThreaded'}",
                 f"-DCMAKE_CONFIGURATION_TYPES={config}",
-                f"-DNetcodeCore_DIR={config_sdk}/core/lib/cmake/NetcodeCore",
-                f"-DNetcodeCocos_DIR={config_sdk}/cocos/lib/cmake/NetcodeCocos",
+                f"-DNetcodeCore_DIR={core_sdk}/lib/cmake/NetcodeCore",
+                f"-DNetcodeCocos_DIR={cocos_sdk}/lib/cmake/NetcodeCocos",
                 f"-DNETCODE_GODOT_SDK={config_sdk}/godot",
             ]
         if args.steam_sdk:

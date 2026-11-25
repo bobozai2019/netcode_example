@@ -30,6 +30,8 @@ Shiftline、Godot 车场、Sync Lab 和属性采样示例已附各自的 Windows
 
 以下构建、刷新插件和验收命令在示例仓库根目录执行。默认使用同级框架的 `out/install/win-x64-msvc-mt/<配置>/<产品>`。传入 `--sdk-root` 可以改用其他安装位置。单独取得本仓库时，也可以把 SDK 解压为这套布局，Unity 的 tgz 解到 `unity/` 时去掉内部的 `package/` 前缀。生成的游戏交付包位于本地 `out/packages/`。
 
+车场 `25925e5` 会在使用支持 word 协议的 Core 构建时协商双向差量，也能使用旧 Core 编译并走字段格式。sync-lab 的启动器默认加载随附插件，`verify_sync_lab.py --sdk` 可显式选用本地修复版。测试记录中的构建标识应以 `sdk_build_id` 为准。[开发版复验命令](sync-lab/README.md#验证逐-word-开发版)
+
 ```powershell
 python -B tools/prepare_godot_fps.py
 python -B tools/verify_godot_fps.py
@@ -40,7 +42,7 @@ python -B tools/verify_godot_racing.py
 
 FPS 准备脚本默认用锁文件校验插件包。可通过 `NETCODE_PACKAGES` 指向保存四个发布包的目录。开发时可以显式指定 `--addon <本地插件ZIP>`。打开 [Shiftline](shiftline/project.godot) 或[赛车项目](yard/godot/project.godot) 后按 F5。
 
-Cocos 构建可单独启用 `--cocos`。完整物理用例需要 `--chipmunk-root` 和 `--bullet-root`，并使用与这两个物理开关匹配的 Cocos SDK。可用 `--deps-cache` 或 `NETCODE_DEPS_CACHE` 指定共享依赖目录，已有工作区可以复用旧 Release 构建树中的下载和 vcpkg 安装。三种引擎一同构建时，在一次命令中列出所需引擎。随后执行 `python -B tools/verify_gameplay_components.py` 检查三组联机。
+Cocos 构建可单独启用 `--cocos`。默认使用本机安装的 Core 和 Cocos SDK。缺少安装或 Core 构建号不匹配时，使用 [依赖锁](sdk-lock.json) 指定的配套归档。可用 `NETCODE_PACKAGES` 指向归档目录，或用 `--sdk-root` 选择自己的配套安装。完整物理用例需要 `--chipmunk-root` 和 `--bullet-root`，并使用与这两个物理开关匹配的 Cocos SDK。可用 `--deps-cache` 或 `NETCODE_DEPS_CACHE` 指定共享依赖目录。构建后运行 `python -B tools/verify_gameplay_components.py --engine cocos` 检查 Cocos 双端玩法。
 
 ## 外部接入复验
 

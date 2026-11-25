@@ -5,7 +5,7 @@
   "packages": {
     "core": {
       "archive": "netcode-core-win-x64.zip",
-      "sha256": "3e09437389ee31678fd34dde6c74f28c9c30a7ff25f43098c2fc4117fa87a8e6"
+      "sha256": "e2e75a95262718688d7e2f2b61a7e6e4c72a4f7376635c3429875341e9b0f38c"
     },
     "godot": {
       "archive": "netcode-godot-win-x64.zip",
@@ -13,11 +13,11 @@
     },
     "cocos": {
       "archive": "netcode-cocos-win-x64.zip",
-      "sha256": "eaad6d2e7257f5024e153cb53f1b0cb6b9c1ab30c9df307f0f2f88b22513addf"
+      "sha256": "0949f9f3ef9a8f835e7c578d6d48a16801aba20f10675f54c8978977574cfeba"
     },
     "unity": {
       "archive": "netcode-unity-win-x64.tgz",
-      "sha256": "8da0024644caa40cc620941c513b05f685d8eb3b8e41b620a3b3b81294af212f"
+      "sha256": "ecedff3ab29af0006ceeb4effb8d4a4cc1e2e156de724afe867e910f802c7d7d"
     }
   }
 }
