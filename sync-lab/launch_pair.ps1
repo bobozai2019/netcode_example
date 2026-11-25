@@ -43,8 +43,11 @@ if ($runProject) {
 $netcodeDll = Join-Path $PSScriptRoot 'addons/netcode/bin/netcode_godot.dll'
 $archive = $env:NETCODE_BENCH_SDK
 if (-not $archive -and $runProject -and -not (Test-Path -LiteralPath $netcodeDll)) {
-    $candidate = Join-Path (Split-Path -Parent $exampleRoot) 'netcode/out/packages/godot-win-x64/current/netcode-godot-win-x64.zip'
-    if (Test-Path -LiteralPath $candidate) { $archive = $candidate }
+    $candidate = Join-Path (Split-Path -Parent $exampleRoot) 'netcode/out/packages/godot-native-win-x64/current/netcode-godot-native-win-x64.zip'
+    if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) {
+        throw 'The bundled Netcode addon is missing. Restore it or set NETCODE_BENCH_SDK to a Godot SDK ZIP.'
+    }
+    $archive = $candidate
 }
 $stamp = Join-Path $PSScriptRoot '.godot/netcode-lab-sdk.sha256'
 $archiveHash = if ($archive -and $runProject) {

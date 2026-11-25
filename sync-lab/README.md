@@ -1,12 +1,12 @@
 # Godot 双客户端同步试验场
 
-把 Godot 4.6.1 Windows x64 的两个 exe 放入 `runtime/godot-4.6.1/`，然后双击 [launch.bat](launch.bat) 打开左右两个玩家窗口。工程已附 Netcode 插件和 TCP 模块。默认选择 128 对象，由 A 开 Netcode 房，B 经 TCP 加入。运行 Fusion 模式前需安装原版 Photon SDK，两端按项目设置的 Cloud 或 Local 模式加入同一个 Shared Authority 房间。
+把 Godot 4.6.1 Windows x64 的两个 exe 放入 `runtime/godot-4.6.1/`，然后双击 `launch.bat` 打开左右两个玩家窗口。工程随附原生 C++ Netcode 插件和 TCP 模块，插件构建为 `5ce4ee1e67e62812/cbd0dce8d269280e`。默认选择 128 对象，由 A 开 Netcode 房，B 经 TCP 加入。运行 Fusion 模式前需安装原版 Photon SDK，两端按项目设置的 Cloud 或 Local 模式加入同一个 Shared Authority 房间。[启动脚本](launch.bat) · [随附构建标识](addons/netcode/build-id.txt)
 
 界面和按钮连线保存在 [主场景](lab.tscn)。开房或加入时实例化所选的 [Netcode 会话场景](netcode_session.tscn) 或 [Fusion 会话场景](fusion_session.tscn)，退出时释放该会话。两个 Spawner 的生成位置和三个模板都在场景里配置，小球由 Spawner 按房间人数和所选对象数生成。
 
 Netcode 的三个模板使用 [同一字段配置](netcode_orb_config.tres) 和 `orb.gd`。在 Godot 选中模板的 Sync，即可在 **Netcode 同步属性** 面板修改字段。两个后端各自在本端订阅用户键，由房间属性告诉客端应选择的组。
 
-`-DemoCheck -Trace` 下，A 等待 B 核对全部字段，再依次切换全量、键 1、键 2 和全量。B 核对对象编号，128 档依次可见 128、76、76、128，512 档依次可见 512、268、268、512。从示例仓库根目录可用 `python -B tools/verify_sync_lab.py 128 --sdk sync-lab/addons/netcode` 运行同一用例的双进程断言版。`--sdk` 也接受 SDK ZIP。安装 Fusion 后可追加 `--backend Fusion --cloud` 运行对照。
+`-DemoCheck -Trace` 下，A 等待 B 核对全部字段，再依次切换全量、键 1、键 2 和全量。B 核对对象编号，128 档依次可见 128、76、76、128，512 档依次可见 512、268、268、512，1024 档依次可见 1024、524、524、1024。从示例仓库根目录可用 `python -B tools/verify_sync_lab.py 128 --sdk sync-lab/addons/netcode` 验证随附构建。`--sdk` 接受 SDK ZIP 或 `addons/netcode` 目录。安装 Fusion 后可追加 `--backend Fusion` 使用项目设置的 Local 模式，使用 `--backend Fusion --cloud` 切换云房间。
 
 | 启动方式 | 操作 |
 | --- | --- |
@@ -15,11 +15,12 @@ Netcode 的三个模板使用 [同一字段配置](netcode_orb_config.tres) 和 
 | Fusion Local 独立 exe 双开 | `.\launch_fusion_local.bat -Objects 128` |
 | 双开后手动选择后端 | `.\launch.bat -Manual` |
 | 用项目自带的 4.6.1 打开编辑器 | `.\launch.bat -Editor` |
-| 指定对象数和 TCP 端口 | `.\launch.bat -Objects 128 -Port 43232` |
+| 1024 对象 Netcode 双开 | `.\launch.bat -Objects 1024` |
+| 指定 TCP 端口 | `.\launch.bat -Port 43232` |
 
 在窗口顶部选择 **Netcode** 或 **Fusion**。Netcode 输入房主的地址和端口，Fusion 输入两端一致的房间名。手动开房时先让 A 开房，再让 B 加入，两端选择相同对象数。切换后端前让两个窗口退出当前房间。
 
-Fusion Preview 555 从项目设置 **Fusion → Connection** 读取 App ID、模式、区域和 App Version。当前项目模式为 Local，地址为 `127.0.0.1:5055`。双开脚本默认生成独立的 Photon 房间名，也可通过 `-Room` 指定。需要安装插件时，在本目录运行 `python -B prepare_fusion.py`，或用 `NETCODE_FUSION_ADDON` 指定原版 SDK 的 `addons/fusion`。Netcode 的已安装插件会复用，也可用 `NETCODE_BENCH_SDK` 指定 Windows SDK ZIP。可用 `NETCODE_GODOT_EXE` 为双开脚本指定其他引擎路径。
+Fusion Preview 555 从项目设置 **Fusion → Connection** 读取 App ID、模式、区域和 App Version。当前项目模式为 Local，地址为 `127.0.0.1:5055`。双开脚本默认生成独立的 Photon 房间名，也可通过 `-Room` 指定。需要安装插件时，在本目录运行 `python -B prepare_fusion.py`，或用 `NETCODE_FUSION_ADDON` 指定原版 SDK 的 `addons/fusion`。启动脚本复用随附的 Netcode 插件。缺少 DLL 时，从同级框架仓库 `out/packages/godot-native-win-x64/current/` 的原生 SDK ZIP 补装。设置 `NETCODE_BENCH_SDK` 可让启动器把指定的 Windows SDK ZIP 安装到本项目，用 `NETCODE_GODOT_EXE` 可指定启动器的引擎路径。验收脚本使用 `runtime/godot-4.6.1/` 下的对应 exe。
 
 运行 Fusion 前，在本目录新建由 Git 忽略的 `override.cfg`，填入自己的 App ID。[Godot 项目设置](https://docs.godotengine.org/en/stable/classes/class_projectsettings.html)
 
@@ -40,13 +41,23 @@ Fusion 在确认仿真时钟启动后分批生成对象，客端收齐初始对�
 
 日常双开默认用 128 档。此前限速配置的 Windows 双端验证覆盖八字段、AOI 切换及持续更新。Fusion Cloud 的 512 档在高负载下曾发生批量更新滞后。加上 `-DemoCheck -CaptureDir <目录>` 可记录双端画面、校验日志和更新年龄。
 
-在示例仓库根目录运行以下命令，可用真实窗口验证 Netcode 的 512 档。输出包含全量负载期间双端的帧率、P95 帧间隔、绘制调用数，以及八字段和 AOI 断言结果。
+在示例仓库根目录运行以下命令，可用真实窗口验证随附 SDK 的 1024 档。输出包含全量负载期间双端的帧率、P95 帧间隔、绘制调用数，以及八字段和 AOI 断言结果。Godot 按渲染帧数退出，低帧率时实际运行时间会延长。
 
 三个 Netcode 小球模板共用的 `netcode_orb_config.tres` 已启用 `apply_proxy_changes_only`。客端按已接收的网络状态回写变化字段。`--require-proxy-changes` 会检查实际绑定的模板采用了该路径。把资源选项改为 `false` 后，用省略该参数的命令对照逐步采样和本地纠偏模式。
 
 ```powershell
-python -B tools/verify_sync_lab.py 512 --sdk sync-lab/addons/netcode --seconds 42 --windowed --require-proxy-changes
+python -B tools/verify_sync_lab.py 1024 --sdk sync-lab/addons/netcode --seconds 42 --windowed --require-proxy-changes
 ```
+
+## 验证逐 word 开发版
+
+修复版验收使用本地安装的 `929c4f1663907b23/cbd0dce8d269280e`。先在同级框架仓库构建 Core 和 Godot 原生版，再从本仓库根目录运行以下命令。脚本在临时项目中加载指定 SDK，输出实际 `sdk_build_id`。
+
+```powershell
+python -B tools/verify_sync_lab.py 1024 --sdk ../netcode/out/install/win-x64-msvc-mt/Release/godot/addons/netcode --seconds 36 --require-proxy-changes
+```
+
+两端用该构建完成了无窗口测试。客机全量期间持续更新 1023 个远端对象，AOI 可见数依次为 1024、524、524、1024。要比较双窗口 FPS，使用相同的场景、对象数与窗口参数，分别指定所需 SDK。
 
 ## 同步日志
 

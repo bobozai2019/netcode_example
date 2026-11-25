@@ -101,8 +101,11 @@ def run(work, godot, backend, count, seconds, windowed=False):
                     sleep(0.1)
                 if not ready.is_file() or ready.read_text(encoding="utf-8").strip() != "ready":
                     raise RuntimeError("The host did not open a room")
+        # Godot's quit limit counts rendered frames. A loaded window may take
+        # longer than the nominal duration to reach the limit.
+        timeout = (seconds * 2 if windowed else seconds) + 15
         for role, process in jobs.items():
-            status[role] = process.wait(timeout=seconds + 15)
+            status[role] = process.wait(timeout=timeout)
     finally:
         for process in jobs.values():
             if process.poll() is None:
@@ -159,7 +162,7 @@ def check(work, statuses, count, require_proxy_changes=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("objects", type=int, choices=(128, 512))
+    parser.add_argument("objects", type=int, choices=(128, 512, 1024))
     parser.add_argument("--sdk", type=Path, required=True, help="SDK ZIP or installed addons/netcode directory")
     parser.add_argument("--backend", choices=("Netcode", "Fusion"), default="Netcode")
     parser.add_argument("--cloud", action="store_true", help="Use Photon Cloud for the Fusion run")
