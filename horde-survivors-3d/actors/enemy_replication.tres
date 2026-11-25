@@ -1,0 +1,5 @@
+[gd_resource type="NetcodeReplicationConfig" format=3]
+
+[resource]
+properties = Array[NodePath]([NodePath(":entity_id"), NodePath(":controller"), NodePath(":generation"), NodePath(":position_xz"), NodePath(":facing"), NodePath(":source_step"), NodePath(":hp"), NodePath(":version"), NodePath(":species"), NodePath(":target"), NodePath(":windup_until"), NodePath(":charge_direction"), NodePath(":cooldown_until")])
+apply_proxy_changes_only = true

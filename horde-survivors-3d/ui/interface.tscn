@@ -1,0 +1,590 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/interface.gd" id="Interface"]
+[ext_resource type="PackedScene" path="res://ui/damage_number.tscn" id="DamageNumber"]
+
+[sub_resource type="StyleBoxFlat" id="Button"]
+content_margin_left = 10.0
+content_margin_top = 7.0
+content_margin_right = 10.0
+content_margin_bottom = 7.0
+bg_color = Color(0.141176, 0.266667, 0.352941, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.262745, 0.423529, 0.505882, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="ButtonActive"]
+content_margin_left = 10.0
+content_margin_top = 7.0
+content_margin_right = 10.0
+content_margin_bottom = 7.0
+bg_color = Color(0.203922, 0.364706, 0.450980, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.262745, 0.423529, 0.505882, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="Lobby"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431, 0.168627, 0.231373, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="Crew"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431, 0.168627, 0.231373, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="Timer"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431, 0.168627, 0.231373, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="End"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+bg_color = Color(0.078431, 0.168627, 0.231373, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="BarBack"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.047059, 0.125490, 0.172549, 1)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="BarTide"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.396078, 0.901961, 0.917647, 1)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="BarEmber"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1.000000, 0.749020, 0.403922, 1)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="BarXP"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.501961, 0.945098, 0.827451, 1)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(0.258824, 0.396078, 0.466667, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="Theme" id="InterfaceTheme"]
+default_font_size = 16
+Button/styles/normal = SubResource("Button")
+Button/styles/hover = SubResource("ButtonActive")
+Button/styles/pressed = SubResource("ButtonActive")
+Button/styles/focus = SubResource("ButtonActive")
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("Interface")
+
+[node name="Root" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("InterfaceTheme")
+
+[node name="LobbyCenter" type="CenterContainer" parent="Root"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Lobby" type="PanelContainer" parent="Root/LobbyCenter"]
+custom_minimum_size = Vector2(580, 0)
+theme_override_styles/panel = SubResource("Lobby")
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Menu" type="VBoxContainer" parent="Root/LobbyCenter/Lobby"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Title" type="Label" parent="Root/LobbyCenter/Lobby/Menu"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.925490, 0.972549, 1.000000, 1)
+theme_override_font_sizes/font_size = 41
+text = "B R E A K W A T E R"
+
+[node name="Subtitle" type="Label" parent="Root/LobbyCenter/Lobby/Menu"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.619608, 0.717647, 0.780392, 1)
+theme_override_font_sizes/font_size = 18
+text = "Two survivors. Six minutes."
+
+[node name="Divider" type="HSeparator" parent="Root/LobbyCenter/Lobby/Menu"]
+layout_mode = 2
+
+[node name="Connection" type="HBoxContainer" parent="Root/LobbyCenter/Lobby/Menu"]
+layout_mode = 2
+
+[node name="Address" type="LineEdit" parent="Root/LobbyCenter/Lobby/Menu/Connection"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(250, 0)
+text = "127.0.0.1"
+placeholder_text = "Host IPv4 address"
+
+[node name="Port" type="SpinBox" parent="Root/LobbyCenter/Lobby/Menu/Connection"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1024.0
+max_value = 65535.0
+value = 43391.0
+alignment = 1
+
+[node name="Mode" type="OptionButton" parent="Root/LobbyCenter/Lobby/Menu/Connection"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "A  Host movement"
+popup/item_0/id = 0
+popup/item_1/text = "B  Local movement"
+popup/item_1/id = 1
+popup/item_2/text = "C  Shared enemies"
+popup/item_2/id = 2
+selected = 1
+
+[node name="Actions" type="HBoxContainer" parent="Root/LobbyCenter/Lobby/Menu"]
+layout_mode = 2
+
+[node name="Host" type="Button" parent="Root/LobbyCenter/Lobby/Menu/Actions"]
+layout_mode = 2
+focus_mode = 0
+text = "Host room"
+
+[node name="Join" type="Button" parent="Root/LobbyCenter/Lobby/Menu/Actions"]
+layout_mode = 2
+focus_mode = 0
+text = "Join room"
+
+[node name="Leave" type="Button" parent="Root/LobbyCenter/Lobby/Menu/Actions"]
+layout_mode = 2
+focus_mode = 0
+text = "Leave"
+
+[node name="Status" type="Label" parent="Root/LobbyCenter/Lobby/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.501961, 0.945098, 0.827451, 1)
+theme_override_font_sizes/font_size = 15
+text = ""
+
+[node name="Controls" type="Label" parent="Root/LobbyCenter/Lobby/Menu"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.619608, 0.717647, 0.780392, 1)
+theme_override_font_sizes/font_size = 14
+text = "WASD  Move     •     Weapons fire automatically"
+
+[node name="Display" type="Control" parent="Root"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Scoreboard" type="HBoxContainer" parent="Root/Display"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 23.0
+offset_top = 22.0
+offset_right = -23.0
+grow_horizontal = 2
+theme_override_constants/separation = 22
+
+[node name="Tide" type="PanelContainer" parent="Root/Display/Scoreboard"]
+custom_minimum_size = Vector2(215, 0)
+theme_override_styles/panel = SubResource("Crew")
+layout_mode = 2
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/Scoreboard/Tide"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="TideName" type="Label" parent="Root/Display/Scoreboard/Tide/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.396078, 0.901961, 0.917647, 1)
+theme_override_font_sizes/font_size = 15
+text = "TIDE"
+
+[node name="TideHealth" type="ProgressBar" parent="Root/Display/Scoreboard/Tide/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 8)
+theme_override_styles/background = SubResource("BarBack")
+theme_override_styles/fill = SubResource("BarTide")
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="Timer" type="PanelContainer" parent="Root/Display/Scoreboard"]
+custom_minimum_size = Vector2(200, 0)
+theme_override_styles/panel = SubResource("Timer")
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/Scoreboard/Timer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Clock" type="Label" parent="Root/Display/Scoreboard/Timer/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.925490, 0.972549, 1.000000, 1)
+theme_override_font_sizes/font_size = 34
+text = "06:00"
+horizontal_alignment = 1
+
+[node name="Mission" type="Label" parent="Root/Display/Scoreboard/Timer/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.501961, 0.945098, 0.827451, 1)
+theme_override_font_sizes/font_size = 14
+text = ""
+horizontal_alignment = 1
+
+[node name="Ember" type="PanelContainer" parent="Root/Display/Scoreboard"]
+custom_minimum_size = Vector2(215, 0)
+theme_override_styles/panel = SubResource("Crew")
+layout_mode = 2
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/Scoreboard/Ember"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="EmberName" type="Label" parent="Root/Display/Scoreboard/Ember/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1.000000, 0.749020, 0.403922, 1)
+theme_override_font_sizes/font_size = 15
+text = "EMBER"
+
+[node name="EmberHealth" type="ProgressBar" parent="Root/Display/Scoreboard/Ember/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 8)
+theme_override_styles/background = SubResource("BarBack")
+theme_override_styles/fill = SubResource("BarEmber")
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="Footer" type="HBoxContainer" parent="Root/Display"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 23.0
+offset_top = -95.0
+offset_right = -23.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 18
+
+[node name="Equipment" type="PanelContainer" parent="Root/Display/Footer"]
+custom_minimum_size = Vector2(210, 0)
+theme_override_styles/panel = SubResource("Crew")
+layout_mode = 2
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/Footer/Equipment"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Kit" type="Label" parent="Root/Display/Footer/Equipment/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.925490, 0.972549, 1.000000, 1)
+theme_override_font_sizes/font_size = 14
+text = ""
+
+[node name="XP" type="PanelContainer" parent="Root/Display/Footer"]
+custom_minimum_size = Vector2(250, 0)
+theme_override_styles/panel = SubResource("Crew")
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/Footer/XP"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="XPLabel" type="Label" parent="Root/Display/Footer/XP/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.501961, 0.945098, 0.827451, 1)
+theme_override_font_sizes/font_size = 14
+text = ""
+
+[node name="XPBar" type="ProgressBar" parent="Root/Display/Footer/XP/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 8)
+theme_override_styles/background = SubResource("BarBack")
+theme_override_styles/fill = SubResource("BarXP")
+max_value = 8.0
+value = 0.0
+show_percentage = false
+
+[node name="Controls" type="PanelContainer" parent="Root/Display/Footer"]
+custom_minimum_size = Vector2(165, 0)
+theme_override_styles/panel = SubResource("Crew")
+layout_mode = 2
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/Footer/Controls"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Leave" type="Button" parent="Root/Display/Footer/Controls/Details"]
+layout_mode = 2
+focus_mode = 0
+text = "Leave room"
+
+[node name="Debug" type="Label" parent="Root/Display"]
+unique_name_in_owner = true
+visible = false
+offset_left = 26.0
+offset_top = 126.0
+theme_override_colors/font_color = Color(0.925490, 0.972549, 1.000000, 1)
+theme_override_font_sizes/font_size = 13
+
+[node name="Options" type="PanelContainer" parent="Root/Display"]
+custom_minimum_size = Vector2(298, 0)
+theme_override_styles/panel = SubResource("Lobby")
+unique_name_in_owner = true
+visible = false
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -324.0
+offset_top = -132.0
+offset_right = -24.0
+grow_horizontal = 0
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/Options"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="UpgradeTitle" type="Label" parent="Root/Display/Options/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.501961, 0.945098, 0.827451, 1)
+theme_override_font_sizes/font_size = 20
+text = "Team upgrade"
+
+[node name="Knife" type="Button" parent="Root/Display/Options/Details"]
+layout_mode = 2
+focus_mode = 0
+text = "1    PIERCING KNIFE\n      Pierce one more target"
+
+[node name="Halo" type="Button" parent="Root/Display/Options/Details"]
+layout_mode = 2
+focus_mode = 0
+text = "2    HALO\n      Unlock aura / increase radius"
+
+[node name="Lightning" type="Button" parent="Root/Display/Options/Details"]
+layout_mode = 2
+focus_mode = 0
+text = "3    CHAIN LIGHTNING\n      Unlock lightning / add a chain"
+
+[node name="OutcomeCenter" type="CenterContainer" parent="Root/Display"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Outcome" type="PanelContainer" parent="Root/Display/OutcomeCenter"]
+custom_minimum_size = Vector2(410, 0)
+theme_override_styles/panel = SubResource("End")
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Details" type="VBoxContainer" parent="Root/Display/OutcomeCenter/Outcome"]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="OutcomeTitle" type="Label" parent="Root/Display/OutcomeCenter/Outcome/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.925490, 0.972549, 1.000000, 1)
+theme_override_font_sizes/font_size = 31
+text = ""
+
+[node name="Return" type="Button" parent="Root/Display/OutcomeCenter/Outcome/Details"]
+layout_mode = 2
+focus_mode = 0
+text = "Return to lobby"
+
+[node name="DamageLayer" type="Control" parent="Root/Display"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Damage1" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage2" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage3" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage4" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage5" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage6" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage7" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage8" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage9" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage10" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage11" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage12" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage13" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage14" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage15" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage16" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage17" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage18" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage19" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage20" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage21" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage22" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage23" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[node name="Damage24" parent="Root/Display/DamageLayer" instance=ExtResource("DamageNumber")]
+
+[connection signal="pressed" from="Root/LobbyCenter/Lobby/Menu/Actions/Host" to="." method="host_room"]
+[connection signal="pressed" from="Root/LobbyCenter/Lobby/Menu/Actions/Join" to="." method="join_room"]
+[connection signal="pressed" from="Root/LobbyCenter/Lobby/Menu/Actions/Leave" to="." method="leave_room"]
+[connection signal="pressed" from="Root/Display/Footer/Controls/Details/Leave" to="." method="leave_room"]
+[connection signal="pressed" from="Root/Display/Options/Details/Knife" to="." method="choose_weapon" binds= [0]]
+[connection signal="pressed" from="Root/Display/Options/Details/Halo" to="." method="choose_weapon" binds= [1]]
+[connection signal="pressed" from="Root/Display/Options/Details/Lightning" to="." method="choose_weapon" binds= [2]]
+[connection signal="pressed" from="Root/Display/OutcomeCenter/Outcome/Details/Return" to="." method="leave_room"]

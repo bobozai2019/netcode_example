@@ -1,0 +1,119 @@
+[gd_scene format=3]
+
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/grunt.tres" id="Grunt"]
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/charger.tres" id="Charger"]
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/boss.tres" id="Boss"]
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/practice.tres" id="Practice"]
+[ext_resource type="Script" path="res://actors/batch.gd" id="Batch"]
+[ext_resource type="Material" path="res://actors/enemy_models/batched_material.tres" id="Material"]
+
+[sub_resource type="CylinderMesh" id="GruntSimple"]
+material = ExtResource("Material")
+top_radius = 0.29
+bottom_radius = 0.52
+height = 0.94
+radial_segments = 4
+
+[sub_resource type="MultiMesh" id="GruntPool"]
+transform_format = 1
+use_colors = true
+mesh = ExtResource("Grunt")
+instance_count = 1024
+visible_instance_count = 0
+
+[sub_resource type="CylinderMesh" id="ChargerSimple"]
+material = ExtResource("Material")
+top_radius = 0.52
+bottom_radius = 0.68
+height = 1.52
+radial_segments = 4
+
+[sub_resource type="MultiMesh" id="ChargerPool"]
+transform_format = 1
+use_colors = true
+mesh = ExtResource("Charger")
+instance_count = 1024
+visible_instance_count = 0
+
+[sub_resource type="CylinderMesh" id="BossSimple"]
+material = ExtResource("Material")
+top_radius = 0.93
+bottom_radius = 1.65
+height = 3.2
+radial_segments = 4
+
+[sub_resource type="MultiMesh" id="BossPool"]
+transform_format = 1
+use_colors = true
+mesh = ExtResource("Boss")
+instance_count = 1024
+visible_instance_count = 0
+
+[sub_resource type="CylinderMesh" id="PracticeSimple"]
+material = ExtResource("Material")
+top_radius = 0.32
+bottom_radius = 0.57
+height = 1.13
+radial_segments = 4
+
+[sub_resource type="MultiMesh" id="PracticePool"]
+transform_format = 1
+use_colors = true
+mesh = ExtResource("Practice")
+instance_count = 1024
+visible_instance_count = 0
+
+[sub_resource type="StandardMaterial3D" id="StonePaint"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+roughness = 0.87
+
+[sub_resource type="PrismMesh" id="Stone"]
+material = SubResource("StonePaint")
+size = Vector3(0.31, 0.63, 0.31)
+
+[sub_resource type="MultiMesh" id="StonePool"]
+transform_format = 1
+use_colors = true
+mesh = SubResource("Stone")
+instance_count = 2048
+visible_instance_count = 0
+
+[node name="Batches" type="Node3D"]
+
+[node name="Grunt" type="MultiMeshInstance3D" parent="."]
+position = Vector3(0, 0.47, 0)
+cast_shadow = 0
+multimesh = SubResource("GruntPool")
+script = ExtResource("Batch")
+tint = Color(0.839216, 0.341176, 0.419608, 1)
+simplified_mesh = SubResource("GruntSimple")
+
+[node name="Charger" type="MultiMeshInstance3D" parent="."]
+position = Vector3(0, 0.76, 0)
+cast_shadow = 0
+multimesh = SubResource("ChargerPool")
+script = ExtResource("Batch")
+tint = Color(1.000000, 0.600000, 0.333333, 1)
+simplified_mesh = SubResource("ChargerSimple")
+
+[node name="Boss" type="MultiMeshInstance3D" parent="."]
+position = Vector3(0, 1.6, 0)
+cast_shadow = 0
+multimesh = SubResource("BossPool")
+script = ExtResource("Batch")
+tint = Color(0.713725, 0.419608, 0.992157, 1)
+simplified_mesh = SubResource("BossSimple")
+
+[node name="Practice" type="MultiMeshInstance3D" parent="."]
+position = Vector3(0, 0.565, 0)
+cast_shadow = 0
+multimesh = SubResource("PracticePool")
+script = ExtResource("Batch")
+tint = Color(0.901961, 0.596078, 0.698039, 1)
+simplified_mesh = SubResource("PracticeSimple")
+
+[node name="Stones" type="MultiMeshInstance3D" parent="."]
+cast_shadow = 0
+multimesh = SubResource("StonePool")
+script = ExtResource("Batch")

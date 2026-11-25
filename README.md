@@ -11,6 +11,7 @@
 | [puzzle](puzzle) | 机关、写权交接、刚体以及字段和 RPC 验证 |
 | [shiftline](shiftline) | 可在 Godot 编辑器中运行的局域网 FPS |
 | [sync-lab](sync-lab) | 两个可操作的 Godot 客户端，用正常 TCP 房间观察属性同步和 AOI 切换 |
+| [horde-survivors-3d](horde-survivors-3d) | Godot 双人六分钟合作生存战与原生 TCP 多写权对照 |
 | [position-replicator](position-replicator) | Godot C++ 属性采样、差量复制和丢包重传演示 |
 | [sdk-lock.json](sdk-lock.json) | 此版示例实测的四个 Release 包及 SHA-256 |
 

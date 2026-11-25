@@ -1,0 +1,33 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/enemy_type.gd" id="EnemyType"]
+
+[node name="EnemyTypes" type="Node"]
+
+[node name="Grunt" type="Node" parent="."]
+script = ExtResource("EnemyType")
+initial_hp = 24
+speed = 2.5
+radius = 0.52
+stone_value = 1
+
+[node name="Charger" type="Node" parent="."]
+script = ExtResource("EnemyType")
+initial_hp = 65
+speed = 3.6
+radius = 0.69
+stone_value = 3
+
+[node name="Boss" type="Node" parent="."]
+script = ExtResource("EnemyType")
+initial_hp = 980
+speed = 2.05
+radius = 1.65
+stone_value = 10
+
+[node name="Practice" type="Node" parent="."]
+script = ExtResource("EnemyType")
+initial_hp = 50
+speed = 1.65
+radius = 0.6
+stone_value = 8

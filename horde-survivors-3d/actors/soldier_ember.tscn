@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://actors/soldier.tscn" id="Soldier"]
+
+[sub_resource type="StandardMaterial3D" id="Marker"]
+shading_mode = 0
+albedo_color = Color(1.000000, 0.749020, 0.403922, 1)
+
+[sub_resource type="StandardMaterial3D" id="Uniform"]
+albedo_color = Color(0.768627, 0.576471, 0.309804, 1)
+
+[node name="Ember" instance=ExtResource("Soldier")]
+
+[node name="Footprint" parent="." index="0"]
+material_override = SubResource("Marker")
+
+[node name="Simplified" parent="." index="1"]
+material_override = SubResource("Marker")
+
+[node name="Head" parent="Rig/CharacterArmature/Skeleton3D/Head_2" index="0"]
+surface_material_override/1 = SubResource("Uniform")
+
+[node name="ShoulderPad_L" parent="Rig/CharacterArmature/Skeleton3D/UpperArm_L" index="0"]
+surface_material_override/0 = SubResource("Uniform")
+
+[node name="ShoulderPad_R" parent="Rig/CharacterArmature/Skeleton3D/UpperArm_R" index="0"]
+surface_material_override/0 = SubResource("Uniform")
+
+[node name="Body" parent="Rig/CharacterArmature/Skeleton3D" index="4"]
+surface_material_override/3 = SubResource("Uniform")
+
+[editable path="Rig"]

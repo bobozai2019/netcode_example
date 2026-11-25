@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/state.gd" id="1"]
+
+[sub_resource type="NetcodeReplicationConfig" id="Fields"]
+properties = Array[NodePath]([NodePath(":entity_id"), NodePath(":controller"), NodePath(":hp"), NodePath(":version"), NodePath(":invulnerable_until"), NodePath(":team")])
+apply_proxy_changes_only = true
+
+[node name="VITALS" type="Node"]
+script = ExtResource("1")
+kind = 1
+
+[node name="Sync" type="NetcodeSharedReplicator" parent="."]
+replication_config = SubResource("Fields")

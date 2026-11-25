@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/grunt.tres" id="Grunt"]
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/charger.tres" id="Charger"]
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/boss.tres" id="Boss"]
+[ext_resource type="CylinderMesh" path="res://actors/enemy_models/practice.tres" id="Practice"]
+
+[sub_resource type="StandardMaterial3D" id="GruntTint"]
+albedo_color = Color(0.839216, 0.341176, 0.419608, 1)
+
+[sub_resource type="StandardMaterial3D" id="ChargerTint"]
+albedo_color = Color(1.000000, 0.600000, 0.333333, 1)
+
+[sub_resource type="StandardMaterial3D" id="BossTint"]
+albedo_color = Color(0.713725, 0.419608, 0.992157, 1)
+
+[sub_resource type="StandardMaterial3D" id="PracticeTint"]
+albedo_color = Color(0.901961, 0.596078, 0.698039, 1)
+
+[node name="EnemyModels" type="Node3D"]
+
+[node name="Grunt" type="MeshInstance3D" parent="."]
+position = Vector3(-3.5, 0.47, 0)
+material_override = SubResource("GruntTint")
+mesh = ExtResource("Grunt")
+
+[node name="Charger" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.76, 0)
+material_override = SubResource("ChargerTint")
+mesh = ExtResource("Charger")
+
+[node name="Boss" type="MeshInstance3D" parent="."]
+position = Vector3(3.5, 1.6, 0)
+material_override = SubResource("BossTint")
+mesh = ExtResource("Boss")
+
+[node name="Practice" type="MeshInstance3D" parent="."]
+position = Vector3(7, 0.565, 0)
+material_override = SubResource("PracticeTint")
+mesh = ExtResource("Practice")

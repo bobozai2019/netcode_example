@@ -1,0 +1,73 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/soldier_view.gd" id="View"]
+[ext_resource type="PackedScene" path="res://assets/quaternius/Character_Soldier.gltf" id="Rig"]
+
+[sub_resource type="TorusMesh" id="Footprint"]
+inner_radius = 0.72
+outer_radius = 0.83
+rings = 24
+ring_segments = 8
+
+[sub_resource type="CapsuleMesh" id="Capsule"]
+radius = 0.45
+height = 1.72
+
+[node name="Soldier" type="Node3D"]
+script = ExtResource("View")
+
+[node name="Footprint" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.06, 0)
+mesh = SubResource("Footprint")
+
+[node name="Simplified" type="MeshInstance3D" parent="."]
+visible = false
+position = Vector3(0, 0.86, 0)
+mesh = SubResource("Capsule")
+
+[node name="Rig" parent="." instance=ExtResource("Rig")]
+scale = Vector3(1.04, 1.04, 1.04)
+
+[node name="AK" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="0"]
+visible = false
+
+[node name="GrenadeLauncher" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="1"]
+visible = false
+
+[node name="Knife_1" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="2"]
+visible = false
+
+[node name="Knife_2" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="3"]
+visible = false
+
+[node name="Pistol" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="4"]
+visible = false
+
+[node name="Revolver" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="5"]
+visible = false
+
+[node name="Revolver_Small" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="6"]
+visible = false
+
+[node name="RocketLauncher" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="7"]
+visible = false
+
+[node name="ShortCannon" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="8"]
+visible = false
+
+[node name="Shotgun" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="9"]
+visible = false
+
+[node name="Shovel" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="10"]
+visible = false
+
+[node name="SMG" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="11"]
+visible = false
+
+[node name="Sniper" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="12"]
+visible = false
+
+[node name="Sniper_2" parent="Rig/CharacterArmature/Skeleton3D/Index1_R" index="13"]
+visible = false
+
+[editable path="Rig"]

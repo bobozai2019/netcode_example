@@ -1,0 +1,10 @@
+[gd_resource type="CylinderMesh" format=3]
+
+[ext_resource type="Material" path="res://actors/enemy_models/batched_material.tres" id="Surface"]
+
+[resource]
+material = ExtResource("Surface")
+top_radius = 0.29
+bottom_radius = 0.52
+height = 0.94
+radial_segments = 6
