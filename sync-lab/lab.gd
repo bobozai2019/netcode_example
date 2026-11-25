@@ -1,151 +1,34 @@
 extends Control
 
 const Orb = preload("res://orb.gd")
-const NetcodeBackend = preload("res://backend_netcode.gd")
 const FusionBackend = preload("res://backend_fusion.gd")
+const Arena = preload("res://arena.gd")
 const SyncTrace = preload("res://sync_trace.gd")
 const GLOBAL_COUNT := Orb.GLOBAL_COUNT
-const OBJECT_COUNTS := [32, 64, 128, 512, 1024]
-const DEFAULT_OBJECT_COUNT := 128
+const NetcodeSessionScene = preload("res://netcode_session.tscn")
 const PLAYER_WRITE_INTERVAL := 0.1
 const LOAD_WARMUP_WAVES := 50
 const REMOTE_AVATAR_DELAY_MS := 1500
 const BACKEND_NAMES := ["Netcode", "Fusion"]
-const GREEN := Color("5de2b1")
-const CYAN := Color("6ebdff")
 const GOLD := Color("ffc278")
-const TEXT := Color("e9f3f7")
-const MUTED := Color("a2b8c8")
 
-class Arena extends Control:
-	const CIRCLE_SIDES := 24
-	const INSTANCE_FLOATS := 12
-
-	var objects: Array[Orb] = []
-	var configured := DEFAULT_OBJECT_COUNT
-	var backend: Node
-	var _circles: MultiMesh
-	var _instances := PackedFloat32Array()
-	var _circle_count := 0
-
-	func _ready() -> void:
-		var vertices := PackedVector2Array([Vector2.ZERO])
-		var indices := PackedInt32Array()
-		for side in CIRCLE_SIDES:
-			vertices.append(Vector2.from_angle(TAU * side / CIRCLE_SIDES))
-			indices.append(0)
-			indices.append(side + 1)
-			indices.append((side + 1) % CIRCLE_SIDES + 1)
-		var arrays := []
-		arrays.resize(Mesh.ARRAY_MAX)
-		arrays[Mesh.ARRAY_VERTEX] = vertices
-		arrays[Mesh.ARRAY_INDEX] = indices
-		var mesh := ArrayMesh.new()
-		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-		_circles = MultiMesh.new()
-		_circles.transform_format = MultiMesh.TRANSFORM_2D
-		_circles.use_colors = true
-		_circles.mesh = mesh
-		resized.connect(_resize_circle_bounds)
-		_resize_circle_bounds()
-
-	func _resize_circle_bounds() -> void:
-		_circles.custom_aabb = AABB(Vector3(-16.0, -16.0, -1.0), Vector3(size.x + 32.0, size.y + 32.0, 2.0))
-
-	func _draw() -> void:
-		var bounds := Rect2(1, 1, size.x - 2, size.y - 2)
-		draw_rect(bounds, Color("09131f"))
-		draw_rect(bounds, Color("2d4052"), false, 1)
-		var pad := 20.0
-		var global_height := 78.0
-		var lane_width := (size.x - pad * 3.0) * 0.5
-		var lower_y := global_height + pad * 1.5
-		var lane_height := maxf(40.0, size.y - lower_y - pad)
-		var left := Rect2(pad, lower_y, lane_width, lane_height)
-		var right := Rect2(pad * 2.0 + lane_width, lower_y, lane_width, lane_height)
-		_lane(Rect2(pad, pad, size.x - pad * 2.0, global_height), "全局 · 玩家及公共对象", GREEN)
-		_lane(left, "AOI 1", CYAN)
-		_lane(right, "AOI 2", GOLD)
-		var cols := mini(12 if configured <= 512 else 17, ceili((configured - GLOBAL_COUNT) / 2.0))
-		var rows := ceili(float(configured - GLOBAL_COUNT) / (2 * cols))
-		var stride := Vector2((lane_width - 18) / cols, (lane_height - 38) / rows)
-		var radius := clampf(minf(stride.x, stride.y) * 0.26, 1.4, 6.6)
-		var capacity := maxi(0, objects.size() - 2) * 2
-		if _circles.instance_count != capacity:
-			_circles.instance_count = capacity
-			_instances.resize(capacity * INSTANCE_FLOATS)
-		_circle_count = 0
-		for i in range(2, objects.size()):
-			var orb := objects[i]
-			if not backend.visible(i): continue
-			if i < GLOBAL_COUNT:
-				var px := pad + 18.0 + (size.x - 2.0 * pad - 36.0) * (i - 2) / (GLOBAL_COUNT - 3.0)
-				_orb(Vector2(px, pad + 54), minf(5.0, size.x / 115.0), GREEN, orb)
-				continue
-			@warning_ignore("integer_division")
-			var index := (i - GLOBAL_COUNT) / 2
-			var lane := left if i % 2 == 0 else right
-			@warning_ignore("integer_division")
-			var point := lane.position + Vector2(9, 31) + (Vector2(index % cols, index / cols) + Vector2(0.5, 0.5)) * stride
-			point += orb.offset.limit_length() * stride * 0.33
-			_orb(point, radius, CYAN if i % 2 == 0 else GOLD, orb)
-		if _circle_count > 0:
-			_circles.visible_instance_count = _circle_count
-			_circles.buffer = _instances
-			draw_multimesh(_circles, null)
-		var play := bounds.grow(-32.0)
-		for i in mini(2, objects.size()):
-			var avatar := objects[i]
-			if not is_instance_valid(avatar) or not backend.visible(i): continue
-			var pos := play.position + ((avatar.offset + Vector2.ONE) * 0.5) * play.size
-			var color := GREEN if i == 0 else Color("ff989f")
-			draw_circle(pos, 16.0, Color(color, 0.22))
-			draw_arc(pos, 13.0, 0, TAU, 24, color, 2.0, true)
-			draw_circle(pos, 7.0, color)
-			draw_string(get_theme_default_font(), pos + Vector2(17, 5), "A" if i == 0 else "B",
-				HORIZONTAL_ALIGNMENT_LEFT, -1, 17, TEXT)
-
-	func _lane(rect: Rect2, caption: String, accent: Color) -> void:
-		draw_rect(rect, Color(accent, 0.045))
-		draw_rect(rect, Color(accent, 0.30), false, 1.0)
-		draw_string(get_theme_default_font(), rect.position + Vector2(12, 22), caption,
-			HORIZONTAL_ALIGNMENT_LEFT, -1, 13, accent)
-
-	func _orb(pos: Vector2, radius: float, color: Color, orb: Orb) -> void:
-		if orb.active:
-			_circle(pos, radius * 1.71, Color(color, 0.20))
-		_circle(pos, radius, color.darkened(0.27 * (1.0 - orb.energy)))
-
-	func _circle(pos: Vector2, radius: float, color: Color) -> void:
-		# A 2D MultiMesh stores two padded transform rows followed by RGBA.
-		var base := _circle_count * INSTANCE_FLOATS
-		_instances[base] = radius
-		_instances[base + 3] = pos.x
-		_instances[base + 5] = radius
-		_instances[base + 7] = pos.y
-		_instances[base + 8] = color.r
-		_instances[base + 9] = color.g
-		_instances[base + 10] = color.b
-		_instances[base + 11] = color.a
-		_circle_count += 1
+@onready var _arena: Arena = %Arena
+@onready var _backend_picker: OptionButton = %BackendPicker
+@onready var _endpoint: LineEdit = %Endpoint
+@onready var _count: OptionButton = %ObjectCount
+@onready var _host_button: Button = %Host
+@onready var _join_button: Button = %Join
+@onready var _leave_button: Button = %Leave
+@onready var _pause_button: Button = %Pause
+@onready var _aoi_button: Button = %Aoi
+@onready var _heading: Label = %Heading
+@onready var _status: Label = %Status
+@onready var _stats: Label = %Stats
 
 var _backend: Node
-var _pool: Node
-var _backend_picker: OptionButton
 var _selected_backend := 0
 var _addresses := ["127.0.0.1:43231", "sync-lab"]
 var _orbs: Array[Orb] = []
-var _arena: Arena
-var _endpoint: LineEdit
-var _count: OptionButton
-var _host_button: Button
-var _join_button: Button
-var _leave_button: Button
-var _pause_button: Button
-var _aoi_button: Button
-var _heading: Label
-var _status: Label
-var _stats: Label
 var _host := false
 var _open := false
 var _round := false
@@ -183,7 +66,6 @@ var _trace: SyncTrace
 
 func _ready() -> void:
 	get_window().min_size = Vector2i(680, 480)
-	_build_ui()
 	var args := OS.get_cmdline_user_args()
 	var backend := _argument(args, "--backend")
 	if backend.is_empty():
@@ -209,93 +91,8 @@ func _argument(args: PackedStringArray, key: String) -> String:
 	var i := args.find(key)
 	return args[i + 1] if i >= 0 and i + 1 < args.size() else ""
 
-func _build_ui() -> void:
-	var font := SystemFont.new()
-	font.font_names = PackedStringArray(["Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC"])
-	var skin := Theme.new()
-	skin.default_font = font
-	skin.default_font_size = 14
-	for type in ["Button", "OptionButton", "LineEdit"]:
-		for state in ["normal", "read_only", "disabled", "hover", "pressed", "focus"]:
-			var style := StyleBoxFlat.new()
-			style.bg_color = Color("25485b") if state in ["hover", "pressed", "focus"] else Color("162839")
-			style.border_color = Color("37546b")
-			style.set_border_width_all(1)
-			style.set_corner_radius_all(5)
-			style.content_margin_left = 11
-			style.content_margin_right = 11
-			style.content_margin_top = 6
-			style.content_margin_bottom = 6
-			skin.set_stylebox(state, type, style)
-		skin.set_color("font_color", type, TEXT)
-	theme = skin
-	var margin := MarginContainer.new()
-	add_child(margin)
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	for side in ["left", "right", "top", "bottom"]: margin.add_theme_constant_override("margin_" + side, 17)
-	var body := VBoxContainer.new()
-	body.add_theme_constant_override("separation", 9)
-	margin.add_child(body)
-	var title := _row(body)
-	_heading = _label(title, "同步试验场", 24, TEXT)
-	_heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_status = _label(title, "等待连接", 14, GREEN)
-	_status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	var join := _row(body)
-	_backend_picker = OptionButton.new()
-	for backend_name in BACKEND_NAMES:
-		_backend_picker.add_item(backend_name)
-	_backend_picker.item_selected.connect(_select_backend)
-	join.add_child(_backend_picker)
-	_endpoint = LineEdit.new()
-	_endpoint.placeholder_text = "主机地址:端口"
-	_endpoint.text = _addresses[0]
-	_endpoint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	join.add_child(_endpoint)
-	_count = OptionButton.new()
-	for count in OBJECT_COUNTS:
-		_count.add_item("%d 对象" % count, count)
-	_count.select(OBJECT_COUNTS.find(DEFAULT_OBJECT_COUNT))
-	_count.item_selected.connect(func(_index: int): _arena.configured = _count.get_selected_id())
-	join.add_child(_count)
-	_host_button = _button(join, "开房", _connect_room.bind(true))
-	_join_button = _button(join, "加入", _connect_room.bind(false))
-	_leave_button = _button(join, "退出", _close_room.bind("已退出房间"))
-	_leave_button.disabled = true
-	var controls := _row(body)
-	_stats = _label(controls, "房间承载 2 名玩家", 13, MUTED)
-	_stats.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_stats.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_pause_button = _button(controls, "暂停负载", _toggle_pause)
-	_aoi_button = _button(controls, "客端 AOI：全部", _change_area)
-	_pause_button.disabled = true
-	_aoi_button.disabled = true
-	_arena = Arena.new()
-	_arena.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_arena.custom_minimum_size.y = 300
-	body.add_child(_arena)
-	_label(body, "WASD / 方向键移动  ·  房主可切换客端 AOI 和暂停负载  ·  负载对象 %.0f Hz" % (1.0 / PLAYER_WRITE_INTERVAL), 12, MUTED)
-
-func _row(parent: Node) -> HBoxContainer:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	parent.add_child(row)
-	return row
-
-func _label(parent: Node, content: String, height: int, tone: Color) -> Label:
-	var label := Label.new()
-	label.text = content
-	label.add_theme_font_size_override("font_size", height)
-	label.add_theme_color_override("font_color", tone)
-	parent.add_child(label)
-	return label
-
-func _button(parent: Node, title: String, action: Callable) -> Button:
-	var button := Button.new()
-	button.text = title
-	button.pressed.connect(action)
-	parent.add_child(button)
-	return button
+func _select_object_count(index: int) -> void:
+	_arena.configured = _count.get_item_id(index)
 
 func _select_backend(index: int) -> void:
 	_addresses[_selected_backend] = _endpoint.text
@@ -316,12 +113,18 @@ func _connect_room(host: bool) -> void:
 		return
 	_host = host
 	_arena.configured = _count.get_selected_id()
-	_pool = Node.new()
-	_pool.name = "ReplicatedOrbs"
-	add_child(_pool)
-	_backend = FusionBackend.new() if _selected_backend == 1 else NetcodeBackend.new()
+	var session_scene := NetcodeSessionScene
+	if _selected_backend == 1:
+		if not Engine.has_singleton("Fusion"):
+			_close_room("Fusion 扩展未加载")
+			return
+		session_scene = load("res://fusion_session.tscn")
+		if session_scene == null:
+			_close_room("无法加载 Fusion 会话场景")
+			return
+	_backend = session_scene.instantiate()
 	add_child(_backend)
-	var error: String = _backend.open(_pool, host, endpoint, _arena.configured)
+	var error: String = _backend.open(host, endpoint, _arena.configured)
 	if not error.is_empty():
 		_close_room(error)
 		return
@@ -371,10 +174,6 @@ func _close_room(message: String) -> void:
 		remove_child(_backend)
 		_backend.queue_free()
 		_backend = null
-	if is_instance_valid(_pool):
-		remove_child(_pool)
-		_pool.queue_free()
-		_pool = null
 	_orbs = []
 	_arena.objects = []
 	_arena.backend = null

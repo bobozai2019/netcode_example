@@ -1,13 +1,12 @@
 extends Node
 
 const Orb = preload("res://orb.gd")
-const SpawnerScene = preload("res://netcode_spawner.tscn")
 const SPAWN_BATCH := 8
 const SPAWN_WINDOW := 64
 const SPAWN_PROGRESS_STEP := 32
 
 var orbs: Array[Orb] = []
-var _spawner: NetcodeSpawner
+@onready var _spawner: NetcodeSpawner = $Spawner
 var _host := false
 var _owned := 0
 var _visible := 0
@@ -19,7 +18,7 @@ var _ready_sent := false
 var _open := false
 var _error := ""
 
-func open(pool: Node, host: bool, endpoint: String, count: int) -> String:
+func open(host: bool, endpoint: String, count: int) -> String:
 	var split := endpoint.rfind(":")
 	if split <= 0 or not endpoint.substr(split + 1).is_valid_int():
 		return "请输入有效的 IP 和端口"
@@ -27,11 +26,6 @@ func open(pool: Node, host: bool, endpoint: String, count: int) -> String:
 	var port := endpoint.substr(split + 1).to_int()
 	_host = host
 	orbs.resize(count)
-	_spawner = SpawnerScene.instantiate()
-	pool.add_child(_spawner)
-	_spawner.spawned.connect(_register_orb)
-	_spawner.despawned.connect(_unregister_orb)
-	_spawner.spawn_failed.connect(_spawn_failed)
 	Netcode.interest_exit.connect(_unregister_orb)
 	Netcode.connection_failed.connect(_connection_failed)
 	Netcode.room_left.connect(_room_left)

@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://backend_netcode.gd" id="Backend"]
+[ext_resource type="PackedScene" path="res://netcode_spawner.tscn" id="Spawner"]
+
+[node name="ReplicatedOrbs" type="Node"]
+script = ExtResource("Backend")
+
+[node name="Spawner" parent="." instance=ExtResource("Spawner")]
+
+[connection signal="spawned" from="Spawner" to="." method="_register_orb"]
+[connection signal="despawned" from="Spawner" to="." method="_unregister_orb"]
+[connection signal="spawn_failed" from="Spawner" to="." method="_spawn_failed"]

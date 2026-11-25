@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://backend_fusion.gd" id="Backend"]
+[ext_resource type="PackedScene" path="res://fusion_global.tscn" id="Global"]
+[ext_resource type="PackedScene" path="res://fusion_area1.tscn" id="Area1"]
+[ext_resource type="PackedScene" path="res://fusion_area2.tscn" id="Area2"]
+
+[node name="ReplicatedOrbs" type="Node"]
+script = ExtResource("Backend")
+
+[node name="FusionSpawner" type="FusionSpawner" parent="."]
+spawn_path = NodePath("..")
+spawnable_scenes = Array[PackedScene]([ExtResource("Global"), ExtResource("Area1"), ExtResource("Area2")])
+
+[connection signal="child_entered_tree" from="." to="." method="_track_orb"]
+[connection signal="child_exiting_tree" from="." to="." method="_untrack_orb"]

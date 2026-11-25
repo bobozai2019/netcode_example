@@ -2,7 +2,9 @@
 
 把 Godot 4.6.1 Windows x64 的两个 exe 放入 `runtime/godot-4.6.1/`，然后双击 [launch.bat](launch.bat) 打开左右两个玩家窗口。工程已附 Netcode 插件和 TCP 模块。默认选择 128 对象，由 A 开 Netcode 房，B 经 TCP 加入。运行 Fusion 模式前需安装原版 Photon SDK，两端按项目设置的 Cloud 或 Local 模式加入同一个 Shared Authority 房间。
 
-Netcode 版在 [生成器场景](netcode_spawner.tscn) 登记三个模板。它们都使用 [同一字段配置](netcode_orb_config.tres) 和 `orb.gd`。在 Godot 选中模板的 Sync，即可在 **Netcode 同步属性** 面板修改字段。两个后端各自在本端订阅用户键，由房间属性告诉客端应选择的组。
+界面和按钮连线保存在 [主场景](lab.tscn)。开房或加入时实例化所选的 [Netcode 会话场景](netcode_session.tscn) 或 [Fusion 会话场景](fusion_session.tscn)，退出时释放该会话。两个 Spawner 的生成位置和三个模板都在场景里配置，小球由 Spawner 按房间人数和所选对象数生成。
+
+Netcode 的三个模板使用 [同一字段配置](netcode_orb_config.tres) 和 `orb.gd`。在 Godot 选中模板的 Sync，即可在 **Netcode 同步属性** 面板修改字段。两个后端各自在本端订阅用户键，由房间属性告诉客端应选择的组。
 
 `-DemoCheck -Trace` 下，A 等待 B 核对全部字段，再依次切换全量、键 1、键 2 和全量。B 核对对象编号，128 档依次可见 128、76、76、128，512 档依次可见 512、268、268、512。从示例仓库根目录可用 `python -B tools/verify_sync_lab.py 128 --sdk sync-lab/addons/netcode` 运行同一用例的双进程断言版。`--sdk` 也接受 SDK ZIP。安装 Fusion 后可追加 `--backend Fusion --cloud` 运行对照。
 

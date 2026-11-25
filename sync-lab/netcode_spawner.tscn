@@ -5,4 +5,5 @@
 [ext_resource type="PackedScene" path="res://netcode_area2.tscn" id="3"]
 
 [node name="Spawner" type="NetcodeSpawner"]
+spawn_path = NodePath("..")
 spawnable_scenes = Array[PackedScene]([ExtResource("1"), ExtResource("2"), ExtResource("3")])

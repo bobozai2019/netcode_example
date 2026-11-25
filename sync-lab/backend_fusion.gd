@@ -1,17 +1,14 @@
 extends Node
 
 const Orb = preload("res://orb.gd")
-const SCENE_PATHS := ["res://fusion_global.tscn", "res://fusion_area1.tscn", "res://fusion_area2.tscn"]
 const SPAWN_BATCH := 8
 const SPAWN_INTERVAL_MS := 80
 const SPAWN_WINDOW := 64
 const SPAWN_PROGRESS_STEP := 32
 
 var orbs: Array[Orb] = []
-var _scenes: Array[PackedScene] = []
-var _pool: Node
 var _fusion: Object
-var _spawner: Node
+@onready var _spawner: Node = $FusionSpawner
 var _host := false
 var _room_name := ""
 var _next_owned := 0
@@ -32,28 +29,13 @@ var _started := false
 static func connection_label() -> String:
 	return "Photon Local" if int(ProjectSettings.get_setting("fusion/connection/mode", 0)) == 1 else "Photon Cloud"
 
-func open(pool: Node, host: bool, endpoint: String, count: int) -> String:
-	if not Engine.has_singleton("Fusion"):
-		return "Fusion 扩展未加载"
+func open(host: bool, endpoint: String, count: int) -> String:
 	_fusion = Engine.get_singleton("Fusion")
 	if _fusion.get_configured_app_id().is_empty():
 		return "请在项目设置 → Fusion → Connection 填写 App ID"
-	_pool = pool
 	_host = host
 	_room_name = endpoint
 	orbs.resize(count)
-	_spawner = ClassDB.instantiate("FusionSpawner")
-	_spawner.name = "FusionSpawner"
-	_spawner.set_spawn_path(^"..")
-	_pool.add_child(_spawner)
-	for path in SCENE_PATHS:
-		var scene: PackedScene = load(path)
-		if scene == null:
-			return "无法加载 Fusion 对象场景"
-		_scenes.append(scene)
-		_spawner.add_spawnable_scene(scene)
-	_pool.child_entered_tree.connect(_track_orb)
-	_pool.child_exiting_tree.connect(_untrack_orb)
 	_fusion.connection_failed.connect(_on_failed)
 	_fusion.connected_to_photon.connect(_on_connected)
 	_fusion.room_joined.connect(_on_joined)
@@ -161,7 +143,7 @@ func _spawn_slice(limit: int) -> void:
 		if _host:
 			index = 0 if _next_owned == 0 else _next_owned + 1
 		var group := 0 if index < Orb.GLOBAL_COUNT else 1 + index % 2
-		var actor: Orb = _spawner.spawn(_scenes[group], _initialize_orb.bind(index))
+		var actor: Orb = _spawner.spawn(_spawner.get_spawnable_scene(group), _initialize_orb.bind(index))
 		if not is_instance_valid(actor):
 			_error = "Fusion 生成对象失败"
 			return

@@ -24,8 +24,18 @@ def configure(work, godot, sdk, backend, cloud, baseline):
         if file.is_file():
             shutil.copy2(file, work)
     if baseline:
-        source = baseline.read_text(encoding="utf-8")
+        source = baseline.read_text(encoding="utf-8").replace("func open(", "func _open_legacy(", 1)
+        (work / "netcode_session.tscn").write_text('''[gd_scene format=3]
+
+[ext_resource type="Script" path="res://backend_netcode.gd" id="Backend"]
+
+[node name="ReplicatedOrbs" type="Node"]
+script = ExtResource("Backend")
+''', encoding="utf-8")
         (work / "backend_netcode.gd").write_text(source + '''
+
+func open(first: bool, endpoint: String, count: int) -> String:
+	return _open_legacy(self, first, endpoint, count)
 
 func trace_state() -> Dictionary:
 	if host: return {"aoi": 0}
