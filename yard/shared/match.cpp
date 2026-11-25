@@ -370,6 +370,9 @@ void Match::receive(const Event& event)
     Reader reader(event.payload);
     GameMessage type;
     if (!read_game_header(reader, type, room(), round())) return;
+#ifdef NETCODE_HAS_WORD_STATE
+    if (writers_.negotiate_word_state(authority_, event.peer, type, reader)) return;
+#endif
     if (host_) host_message(event, type, reader);
     else if (event.peer == guest_->peer()) guest_message(event, type, reader);
 }
@@ -456,6 +459,9 @@ void Match::guest_message(const Event& event, GameMessage type, Reader& reader)
 void Match::network_step()
 {
     ++send_tick_;
+#ifdef NETCODE_HAS_WORD_STATE
+    writers_.probe_word_state(send_tick_);
+#endif
     if (host_) {
         for (const auto& [id, member] : host_->members()) {
             if (!member.peer) continue;
@@ -487,7 +493,11 @@ void Match::network_step()
         input.f32(local_.steer);
         link_->send(guest_->peer(), Lane::Game, input.bytes());
     }
+#ifdef NETCODE_HAS_WORD_STATE
+    writers_.flush(tick_, &authority_);
+#else
     writers_.flush(tick_);
+#endif
 }
 
 std::vector<Obstacle> Match::blockers() const

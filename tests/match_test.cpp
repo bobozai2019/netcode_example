@@ -39,6 +39,88 @@ float field(const Match& match, ObjectId object, std::size_t index)
     return std::get<float>(match.object(object)->values.at(index));
 }
 
+#ifdef NETCODE_HAS_WORD_STATE
+struct NegotiationLink : Transport {
+    MemoryTransport wire;
+    unsigned hellos = 0, offers = 0, word_snapshots = 0, word_samples = 0, field_samples = 0;
+    unsigned drop_hellos = 0, drop_offers = 0;
+
+    std::vector<Event> poll(TimePoint now) override { return wire.poll(now); }
+    void close(Peer peer) override { wire.close(peer); }
+    Traffic traffic() const override { return wire.traffic(); }
+    bool send(Peer peer, Lane lane, const Bytes& payload) override
+    {
+        if (lane == Lane::Game && !payload.empty()) {
+            switch (static_cast<GameMessage>(payload.front())) {
+            case GameMessage::WordStateHello:
+                if (++hellos <= drop_hellos) return true;
+                break;
+            case GameMessage::WordStateSupported:
+                if (++offers <= drop_offers) return true;
+                break;
+            case GameMessage::Snapshot:
+                if (payload.size() > 34 && (payload[34] == 5 || payload[34] == 6)) ++word_snapshots;
+                break;
+            case GameMessage::AuthorityStateWords: ++word_samples; break;
+            case GameMessage::AuthorityState: ++field_samples; break;
+            default: break;
+            }
+        }
+        return wire.send(peer, lane, payload);
+    }
+};
+
+void word_state_negotiation(const Layout& layout, bool legacy)
+{
+    auto host_transport = std::make_unique<NegotiationLink>();
+    auto guest_transport = std::make_unique<NegotiationLink>();
+    auto& host_link = *host_transport;
+    auto& guest_link = *guest_transport;
+    host_link.wire.link(guest_link.wire);
+    guest_link.drop_hellos = legacy ? UINT32_MAX : 1;
+    host_link.drop_offers = 1;
+    Match host(layout, std::move(host_transport), true, 634);
+    Match guest(layout, std::move(guest_transport), false, host.room());
+    TimePoint now{};
+    auto advance = [&](int steps) {
+        while (steps-- > 0) {
+            now += 10ms;
+            host.update(now);
+            guest.update(now);
+        }
+    };
+    advance(20);
+    check(host.start() && host.set_client_authority(2, true), "word negotiation room start");
+    advance(440);
+    const auto car = guest.car();
+    const auto accepted = host.acceptances();
+    check(car && guest.ready() && host.state_writer(car) == 2 && guest.state_writer(car) == 2,
+          "word negotiation blocked baseline or authority");
+    guest.set_input({-.35f, 0.f});
+    host.set_input({-.5f, 0.f});
+    advance(100);
+    check(host.acceptances() > accepted && field(host, car, 0) < 237.f &&
+          field(guest, host.car(), 0) < 205.f, "negotiation mode did not converge in both directions");
+    if (legacy) {
+        check(guest_link.hellos > 1 && !host_link.offers && !host_link.word_snapshots &&
+              !guest_link.word_samples && guest_link.field_samples, "unknown capability enabled word state");
+    } else {
+        check(guest_link.hellos >= 3 && host_link.offers >= 2 && host_link.word_snapshots && guest_link.word_samples,
+              "lost Hello or Supported did not recover both word directions");
+        const auto offers = host_link.offers;
+        const auto words = host_link.word_snapshots;
+        host.end_round();
+        advance(30);
+        check(host.start(), "restart negotiated room");
+        advance(50);
+        host.set_input({-.4f, 0.f});
+        advance(70);
+        check(guest.ready() && host_link.offers > offers && host_link.word_snapshots > words,
+              "word capability did not renegotiate in a new round");
+    }
+}
+#endif
+
 void motion_handoff(const Layout& layout, float speed, unsigned send_hz)
 {
     auto host_transport = std::make_unique<MemoryTransport>();
@@ -121,6 +203,10 @@ int main(int argc, char** argv)
 {
     if (argc != 2) return 2;
     const Layout layout(argv[1]);
+#ifdef NETCODE_HAS_WORD_STATE
+    word_state_negotiation(layout, false);
+    word_state_negotiation(layout, true);
+#endif
     motion_handoff(layout, 60.f, 20);
     motion_handoff(layout, -60.f, 20);
     const auto slow = motion_rate(layout, 10), fast = motion_rate(layout, 40);
