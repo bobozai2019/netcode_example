@@ -13,7 +13,7 @@ Unity 版沿用 Cocos 车场的声明式字段、车辆与闸门规则，以及 
 python -B tools/build.py --unity
 ```
 
-脚本生成可在编辑器打开的 `out/build/win-x64/Release/unity-project`，并构建 `out/build/win-x64/Release/bin/Release/unity/netcode-unity.exe`。跨引擎测试时可在同一次构建追加 `--cocos` 或 `--godot`。使用 `--steam-sdk` 构建时也会把 Steam 运行时复制到 Unity 插件目录。
+脚本生成可在编辑器打开的 `out/build/win-x64/Release/unity-project`，并构建 `out/build/win-x64/Release/bin/Release/unity/netcode-unity.exe`。使用 `--steam-sdk` 构建时也会把 Steam 运行时复制到 Unity 插件目录。
 
 ## 运行
 
@@ -38,13 +38,3 @@ python -B tools/verify_yard.py play --platform unity --port 43264 --fault
 ```
 
 日志、指标和可选截图保存到 `out/runs/last-pass`。[实测报告](../../../netcode/task/unity-platform/验收/验收.md)
-
-## 跨引擎扩展复现
-
-加上 `--guest-platform` 可切换客人的引擎，复跑此前的兼容性验证。
-
-```powershell
-python -B tools/verify_yard.py play --platform unity --guest-platform cocos2dx --port 43261 --fault
-python -B tools/verify_yard.py stress --platform unity --guest-platform cocos2dx --port 43262 --seconds 10 --fault
-python -B tools/verify_yard.py play --platform cocos2dx --guest-platform unity --port 43260 --capture
-```

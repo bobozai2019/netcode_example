@@ -2,7 +2,7 @@
 
 ## 三进程拼图
 
-在 Windows x64 从仓库根目录运行：
+Windows x64 默认构建使用 Debug Core SDK。先在同级 `netcode` 仓运行 `python -B tools/build.py core --config Debug`，再在 `examples` 仓根目录运行以下命令。
 
 ```powershell
 python -B tools/build.py
@@ -14,9 +14,9 @@ python -B tools/verify_puzzle.py --port 43270
 手动运行时用三个独立终端，两位客人按 B、C 的顺序连接：
 
 ```powershell
-.\out\build\win-x64\Debug\examples\puzzle\Debug\netcode-puzzle.exe host 43270
-.\out\build\win-x64\Debug\examples\puzzle\Debug\netcode-puzzle.exe join 43270
-.\out\build\win-x64\Debug\examples\puzzle\Debug\netcode-puzzle.exe join 43270
+.\out\build\win-x64\Debug\puzzle\Debug\netcode-puzzle.exe host 43270
+.\out\build\win-x64\Debug\puzzle\Debug\netcode-puzzle.exe join 43270
+.\out\build\win-x64\Debug\puzzle\Debug\netcode-puzzle.exe join 43270
 ```
 
 | 终端 | 输入 | 结果 |
@@ -58,11 +58,11 @@ python -B tools/verify_puzzle.py --port 43270
 python -B tools/verify_gameplay_components.py
 ```
 
-## 三引擎合作机关
+## 合作机关示例
 
 同一份 [plates.cfg](plates.cfg) 为每块机关声明格子、名称和倒计时截止毫秒。两名客人分别申请机关的状态写权。第一个把 Amber 放到格子 3，第二个把 Jade 放到格子 7。房主和双方都能看到结果。Godot、Unity 和 Cocos2d-x 各自使用自己的场景、脚本和节点。
 
-从仓库根目录构建三个 Windows 客户端后，运行以下命令。第一项让三个引擎轮流开房，第二项使用对应引擎的原生二维刚体。第三项使用独立 Core Debug 构建，让三个玩家进程经历一次房主强制退出。
+`verify_plates.py` 是历史兼容性实验，每场各开一个 Godot、Unity、Cocos2d-x 进程，轮换房主。`--forecast` 选择各平台的原生二维刚体。同引擎字段、RPC 和写权验收使用上一节的 `verify_gameplay_components.py`。下列第三条是独立的 Core Debug 测试，使用三个 Core 进程验证房主退出后的接替。
 
 ```powershell
 python -B tools/verify_plates.py --port 43470
@@ -74,9 +74,9 @@ python -B tools/verify_migration.py --port 43490
 
 ### 房主交接和成组回放
 
-从仓库根目录运行 `python -B tools/verify_script_handoff.py` 可让 Unity 与 Godot 各主持一次三人局。运行器杀掉首任房主，等玩家 2 和玩家 3 在同一间房继续写入，随后验证双人主动交接。
+历史脚本 `tools/verify_script_handoff.py` 使用 Unity 和 Godot 交错组成三人房，记录首任房主退出及后续双人主动交接。独立 Core 进程的接替测试使用上一节的 `verify_migration.py`。
 
-`python -B tools/verify_physics_island.py` 分别启动两份同引擎玩家程序。房主把第 45 步的完整物理组和第 70 步的权威位置传给客人。客人恢复堆叠箱体及带关节的刚体，重演相同输入并返回确认。可用 `--engine godot` 等选项单跑，也可用 `--guest-engine` 指定另一种求解器，工具沿用同一组误差门槛。使用 `--matrix --authority-reset` 会运行全部九种组合，记录原始回放误差，并在超过门槛时恢复最新权威组。[组字段布局](island.cfg) · [实测数据](../../netcode/task/fusion-client-parity/余项验收.md)
+`python -B tools/verify_physics_island.py` 分别启动两份同引擎玩家程序。房主把第 45 步的完整物理组和第 70 步的权威位置传给客人。客人恢复堆叠箱体及带关节的刚体，重演相同输入并返回确认。默认分别验证三组同引擎配对，可用 `--engine godot`、`--engine unity` 或 `--engine cocos` 只跑一组。九种求解器配对的旧矩阵和权威重置误差另见历史实测。[组字段布局](island.cfg) · [实测数据](../../netcode/task/fusion-client-parity/余项验收.md)
 
 ## Godot 声明式控制台
 

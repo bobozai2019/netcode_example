@@ -57,7 +57,7 @@ python -B tools/verify_sync_lab.py 1024 --sdk sync-lab/addons/netcode --seconds 
 python -B tools/verify_sync_lab.py 1024 --sdk ../netcode/out/install/win-x64-msvc-mt/Release/godot/addons/netcode --seconds 36 --require-proxy-changes
 ```
 
-两端用该构建完成了无窗口测试。客机全量期间持续更新 1023 个远端对象，AOI 可见数依次为 1024、524、524、1024。要比较双窗口 FPS，使用相同的场景、对象数与窗口参数，分别指定所需 SDK。
+两端用该构建完成了无窗口测试。客机全量期间持续更新 1023 个远端对象，AOI 可见数依次为 1024、524、524、1024。另有全量可见的 1024 球测试，每球挂载同一份 8 属性配置。报告分别列出两款插件的房主与客机节点耗时、上下行字节和持权分布。比较双窗口 FPS 时须固定场景、对象数和窗口参数。[对象、属性和同步耗时](../../netcode/task/godot-platform/验收/sync-lab单球同步开销.md)
 
 ## 同步日志
 

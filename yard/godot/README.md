@@ -34,7 +34,7 @@
 
 在房主窗口等待 `2/4 seats` 后按 F2。两个窗口各自的绿车为本地玩家。方向键或 WASD 驾驶，E 请求开闸门，B 放路障，X 移除路障，H 鸣笛。客人按 F4 断线，按 R 回原局、接回原车。房主按 F3 结束本局并返回房间，按 Q 结束房间。房主可用 `--bind` 指定 IPv4 监听地址。
 
-车场、复制节点和输入界面运行在 Godot。房间、模拟、状态复制、RPC 与 Winsock 直连来自两个引擎共用的 C++ 目标。
+车场、复制节点和输入界面运行在 Godot。房间、模拟、状态复制、RPC 与 Winsock 直连由车场共用的 C++ 目标提供。
 
 包内四人测试在两个 Godot 命令的用户参数中追加 `--scenario stress --seconds 10`，再启动两次下列命令。四端可同时追加 `--fault`，自动验证 UDP 丢包、重复和乱序后的收敛。
 
@@ -53,6 +53,6 @@ python -B tools/verify_yard.py stress --platform godot --port 43241 --seconds 10
 python -B tools/verify_yard.py stress --platform godot --port 43242 --seconds 10 --fault
 ```
 
-两种引擎可以用 `python -B tools/build.py --godot --cocos` 一次构建。`verify_yard.py` 的 `--platform` 选房主，`--guest-platform` 可单独选客人引擎。轻量客人使用共用的 `netcode-guest.exe`。
+`--platform godot` 默认启动 Godot 房主和 Godot 客人。压力用例可增加共用的 `netcode-guest.exe` 轻量进程来模拟额外玩家。
 
 开发启动时，把 `--path out/build/win-x64/Release/bin/Release/godot` 放在 Godot 的 `--` 之前。打包使用 `python -B tools/package_godot.py --verify-play`，需要安装同版 Windows x64 导出模板。ZIP、依赖和运行日志写到本地 `out/`。

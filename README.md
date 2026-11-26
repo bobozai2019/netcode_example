@@ -1,6 +1,6 @@
 # Netcode 示例
 
-本仓库集中维护 Netcode 游戏示例、Godot 教学项目和验收工具。四个 SDK 的源码、安装与发布说明见 [Netcode 框架仓库](https://github.com/bobozai2019/photon_fusion_copy)。
+本仓库集中维护 Netcode 游戏示例、Godot 教学项目和验收工具。框架支持多个引擎，联机只支持同引擎房间。Godot、Unity、Cocos2d-x 的车场各用本引擎的房主和客人独立验收。四个 SDK 的源码、安装与发布说明见 [Netcode 框架仓库](https://github.com/bobozai2019/photon_fusion_copy)。
 
 | 路径 | 用途 |
 | --- | --- |
@@ -29,7 +29,7 @@ cd examples
 
 Shiftline、Godot 车场、Sync Lab 和属性采样示例已附各自的 Windows x64 插件。Shiftline 和车场可在 Godot 打开对应的 `project.godot`。Sync Lab 首次运行使用 [启动脚本](sync-lab/launch.bat)，它会登记原生扩展。Photon 对照模式需另行安装 Fusion SDK。
 
-以下构建、刷新插件和验收命令在示例仓库根目录执行。默认使用同级框架的 `out/install/win-x64-msvc-mt/<配置>/<产品>`。传入 `--sdk-root` 可以改用其他安装位置。单独取得本仓库时，也可以把 SDK 解压为这套布局，Unity 的 tgz 解到 `unity/` 时去掉内部的 `package/` 前缀。生成的游戏交付包位于本地 `out/packages/`。
+以下构建、刷新插件和验收命令在示例仓库根目录执行。默认使用同级框架的 `out/install/win-x64-msvc-mt/<配置>/<产品>`。无参数的 `tools/build.py` 构建 Debug 拼图和车场单测，需先在 `netcode` 仓运行 `python -B tools/build.py core --config Debug`。带引擎参数的车场构建使用 Release。使用 `--cocos` 时，如果默认安装里的 Core 与 Cocos 缺失或构建标识不匹配，常规构建会改用 `sdk-lock.json` 锁定的 Release 包。传入 `--sdk-root` 可以指定其他安装位置。单独取得本仓库时，也可以把 SDK 解压为这套布局，Unity 的 tgz 解到 `unity/` 时去掉内部的 `package/` 前缀。生成的游戏交付包位于本地 `out/packages/`。
 
 车场 `25925e5` 会在使用支持 word 协议的 Core 构建时协商双向差量，也能使用旧 Core 编译并走字段格式。sync-lab 的启动器默认加载随附插件，`verify_sync_lab.py --sdk` 可显式选用本地修复版。测试记录中的构建标识应以 `sdk_build_id` 为准。[开发版复验命令](sync-lab/README.md#验证逐-word-开发版)
 
