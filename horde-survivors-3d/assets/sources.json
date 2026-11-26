@@ -8,7 +8,6 @@
       "source": "https://quaternius.com/packs/toonshootergamekit.html",
       "license": "CC0-1.0",
       "license_file": "quaternius/CC0-1.0.txt",
-      "workspace_source": "../../shiftline/assets/quaternius/Character_Soldier.gltf",
       "sha256": "d1395255f7cfa8f766369e37e724fa44e2895a46a719d17f720c9c78b014a901",
       "animations_used": ["Idle", "Run", "HitReact", "Death"]
     }

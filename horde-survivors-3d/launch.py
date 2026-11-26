@@ -1,5 +1,5 @@
 
-"""Prepare the bundled Godot SDK and licensed Shiftline asset, then open the lobby."""
+"""Prepare the bundled Godot SDK and project assets, then open the lobby."""
 import argparse
 import hashlib
 import json
@@ -44,16 +44,11 @@ def prepare(godot, sdk=None):
             if not target.exists() or target.read_bytes() != origin.read_bytes():
                 shutil.copy2(origin, target)
     asset = json.loads((PROJECT / "assets/sources.json").read_text(encoding="utf-8"))["files"][0]
-    origin = (PROJECT / "assets" / asset["workspace_source"]).resolve()
+    model_path = PROJECT / "assets" / asset["file"]
     # Git can check out the glTF JSON with CRLF on Windows.
-    model = origin.read_bytes().replace(b"\r\n", b"\n")
+    model = model_path.read_bytes().replace(b"\r\n", b"\n")
     if hashlib.sha256(model).hexdigest() != asset["sha256"]:
-        raise ValueError(f"Unexpected source asset SHA-256: {origin}")
-    target = PROJECT / "assets" / asset["file"]
-    target.parent.mkdir(parents=True, exist_ok=True)
-    if not target.exists() or target.read_bytes() != model:
-        target.write_bytes(model)
-    shutil.copy2(EXAMPLES / "shiftline/assets/licenses/CC0-1.0.txt", PROJECT / "assets" / asset["license_file"])
+        raise ValueError(f"Unexpected bundled asset SHA-256: {model_path}")
     import_project(godot, PROJECT)
 
 

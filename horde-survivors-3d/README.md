@@ -11,7 +11,7 @@ Windows x64 上的双人 Godot 3D 生存战。两名玩家开一间原生 Netcod
 python -B launch.py --pair
 ```
 
-启动脚本默认使用本项目 `addons/netcode` 随附的 Windows x64 原生插件，从本仓 Shiftline 示例复制士兵和许可文件，并执行 Godot 资源导入。若 Godot 未置于 Sync Lab 的运行时目录，传 `--godot-exe` 或设置 `NETCODE_GODOT_EXE`。可用 `--sdk` 将指定的 Windows SDK 安装到项目目录，或用 `--prepare-only` 只准备工程，之后在 Godot 编辑器打开 `project.godot` 并按 F5。
+启动脚本默认使用本项目 `addons/netcode` 随附的 Windows x64 原生插件，并导入项目内的资源。士兵模型和 CC0 许可位于 `assets/quaternius`。首次使用编辑器时，可先运行启动脚本并传入 `--prepare-only` 登记插件和导入资源，再打开 `project.godot` 并按 F5。脚本可用 `--godot-exe` 或环境变量 `NETCODE_GODOT_EXE` 指定 Godot，用 `--sdk` 安装指定的 Windows SDK。
 
 随附插件构建标识为 `e05fe3808b391a05/3d0774b7693ff74d`，包含原生 Godot 扩展和 TCP 模块。[对应的 Netcode 源码](https://github.com/bobozai2019/photon_fusion_copy/commit/791c1efaff926337593478765cad2a100316268c)
 
