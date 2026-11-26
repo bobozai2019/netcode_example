@@ -375,6 +375,8 @@ func receive_receipt(fields: PackedInt32Array) -> void:
 			early_receipts[key.z].append(fields)
 			return
 		book.commit(key, Vector3i(fields[4], fields[5], fields[6]), Wire.point(fields, 9), fields[8])
+		if fields[5] == 0 and game.claimed.has(key.z) and book.stones.has(key.z):
+			book.stones[key.z].winner = game.claimed[key.z]
 		if enemy != null and enemy.sync.is_write_ready():
 			enemy.hp = fields[5]
 			enemy.version = fields[6]

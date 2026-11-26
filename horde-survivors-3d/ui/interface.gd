@@ -79,7 +79,8 @@ func update_display(visible_enemies: int, motion_metrics: MotionMetrics) -> void
 	var life: State = game.vitals.get(game.local_id)
 	options.visible = game.next_choice > 0 and game.result == Rules.Result.LIVE and life != null and life.hp > 0
 	if options.visible:
-		upgrade_title.text = "Team level %d  ·  Choose one" % (game.next_choice + 1)
+		var status_text := "Confirming choice…" if game.choice_request != -1 else "Choose one"
+		upgrade_title.text = "Team level %d  ·  %s" % [game.next_choice + 1, status_text]
 	outcome.visible = game.result != Rules.Result.LIVE
 	if outcome.visible:
 		outcome_title.text = ["", "Siege broken", "Both survivors fell", "Time ran out"][game.result]
