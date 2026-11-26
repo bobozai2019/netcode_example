@@ -1,5 +1,5 @@
 
-"""Prepare the local Godot example from the existing SDK and licensed Shiftline asset."""
+"""Prepare the bundled Godot SDK and licensed Shiftline asset, then open the lobby."""
 import argparse
 import hashlib
 import json
@@ -30,16 +30,19 @@ def game_godot(requested=None):
 def prepare(godot, sdk=None):
     if not budget(ROOT, 96 * 1024**2)["allowed"]:
         raise RuntimeError("Example output budget exceeded")
-    installed = EXAMPLES.parent / "netcode/out/install/win-x64-msvc-mt/Release/godot/addons/netcode"
-    source = sdk or (installed if installed.is_dir() else EXAMPLES / "sync-lab/addons/netcode")
-    for name in SDK_FILES:
-        origin = source / name
-        target = PROJECT / "addons/netcode" / name
-        if not origin.is_file():
-            raise FileNotFoundError(f"SDK file missing: {origin}. Pass --sdk with the native addons/netcode directory.")
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if not target.exists() or target.read_bytes() != origin.read_bytes():
-            shutil.copy2(origin, target)
+    addon = PROJECT / "addons/netcode"
+    if sdk is not None or not all((addon / name).is_file() for name in SDK_FILES):
+        installed = EXAMPLES.parent / "netcode/out/install/win-x64-msvc-mt/Release/godot/addons/netcode"
+        source = sdk or (installed if installed.is_dir() else EXAMPLES / "sync-lab/addons/netcode")
+        missing = next((source / name for name in SDK_FILES if not (source / name).is_file()), None)
+        if missing is not None:
+            raise FileNotFoundError(f"SDK file missing: {missing}. Pass --sdk with the native addons/netcode directory.")
+        for name in SDK_FILES:
+            origin = source / name
+            target = addon / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if not target.exists() or target.read_bytes() != origin.read_bytes():
+                shutil.copy2(origin, target)
     asset = json.loads((PROJECT / "assets/sources.json").read_text(encoding="utf-8"))["files"][0]
     origin = (PROJECT / "assets" / asset["workspace_source"]).resolve()
     # Git can check out the glTF JSON with CRLF on Windows.

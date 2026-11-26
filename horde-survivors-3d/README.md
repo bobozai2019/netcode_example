@@ -11,7 +11,9 @@ Windows x64 上的双人 Godot 3D 生存战。两名玩家开一间原生 Netcod
 python -B launch.py --pair
 ```
 
-启动脚本从本仓的 Shiftline 示例复制士兵和许可文件，准备原生 Netcode 插件，并执行 Godot 资源导入。若 Godot 未置于 Sync Lab 的运行时目录，传 `--godot-exe` 或设置 `NETCODE_GODOT_EXE`。脚本可使用本仓 Sync Lab 随附的 SDK，也可用 `--sdk` 指向指定的 Windows SDK `addons/netcode` 目录。只准备工程时使用 `--prepare-only`，之后也可在 Godot 编辑器打开 `project.godot` 并按 F5。
+启动脚本默认使用本项目 `addons/netcode` 随附的 Windows x64 原生插件，从本仓 Shiftline 示例复制士兵和许可文件，并执行 Godot 资源导入。若 Godot 未置于 Sync Lab 的运行时目录，传 `--godot-exe` 或设置 `NETCODE_GODOT_EXE`。可用 `--sdk` 将指定的 Windows SDK 安装到项目目录，或用 `--prepare-only` 只准备工程，之后在 Godot 编辑器打开 `project.godot` 并按 F5。
+
+随附插件构建标识为 `e05fe3808b391a05/3d0774b7693ff74d`，包含原生 Godot 扩展和 TCP 模块。[对应的 Netcode 源码](https://github.com/bobozai2019/photon_fusion_copy/commit/791c1efaff926337593478765cad2a100316268c)
 
 左边窗口选 B 档、点击 **Host room**。右边使用 **Join room**，同机地址为 `127.0.0.1:43391`。局域网两台机器分别启动一个窗口，客机填写房主的 LAN 地址和房间端口。双方入房并取得角色战斗写权后自动开局。
 

@@ -1,3 +1,4 @@
-/addons/netcode/
+!/addons/netcode/bin/netcode_godot.dll
+!/addons/netcode/bin/netcode_transport_tcp.dll
 /assets/quaternius/*
 !/assets/quaternius/Character_Soldier.gltf.import
