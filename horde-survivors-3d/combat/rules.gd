@@ -3,8 +3,11 @@ extends RefCounted
 
 enum Weapon { KNIFE, HALO, LIGHTNING }
 enum Result { LIVE, VICTORY, DOWN, TIMEOUT }
+enum Gameplay { SURVIVAL, STRESS_TEST }
 const HZ := 60
 const DEADLINE := 360 * HZ
+const SURVIVAL_ENEMY_LIMIT := 128
+const STRESS_ENEMY_LIMIT := 1024
 const MOVE_SPEED := 6.8
 const PLAYER_RADIUS := 0.34
 

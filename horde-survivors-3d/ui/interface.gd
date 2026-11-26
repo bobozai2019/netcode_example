@@ -7,6 +7,7 @@ const MotionMetrics = preload("res://benchmark/enemy_motion.gd")
 @onready var address: LineEdit = %Address
 @onready var port: SpinBox = %Port
 @onready var mode_select: OptionButton = %Mode
+@onready var gameplay_select: OptionButton = %Gameplay
 @onready var status: Label = %Status
 @onready var lobby: PanelContainer = %Lobby
 @onready var display: Control = %Display
@@ -33,7 +34,7 @@ func enter_match() -> void:
 	display.show()
 
 func host_room() -> void:
-	game.open_room(true, "0.0.0.0", int(port.value), mode_select.selected)
+	game.open_room(true, "0.0.0.0", int(port.value), mode_select.selected, gameplay_select.get_selected_id())
 
 func join_room() -> void:
 	game.open_room(false, address.text.strip_edges(), int(port.value), mode_select.selected)
@@ -45,16 +46,19 @@ func choose_weapon(option: int) -> void:
 	game.pick_upgrade(option)
 
 func update_display(visible_enemies: int, motion_metrics: MotionMetrics) -> void:
-	var remain := maxi(0, ceili((Rules.DEADLINE - game.step) / 60.0))
-	clock.text = "%02d:%02d" % [remain / 60, remain % 60]
+	var seconds := maxi(0, ceili((Rules.DEADLINE - game.step) / float(Rules.HZ)))
 	var phase := "SURVIVE THE SWARM"
-	if game.step >= 300 * Rules.HZ:
+	if game.is_stress_test():
+		seconds = floori(game.step / float(Rules.HZ))
+		phase = "STRESS TEST  •  %d/%d ALIVE  •  INVINCIBLE" % [game.battle.book.alive_count, Rules.STRESS_ENEMY_LIMIT]
+	elif game.step >= 300 * Rules.HZ:
 		var enemy: State = game.enemies.get(game.boss_id)
 		phase = "BREAK THE SIEGE"
 		if enemy != null:
 			phase += "   •   BOSS %d HP" % int(game.battle.book.enemies.get(game.boss_id, {}).get("hp", enemy.hp))
 	elif game.step >= 120 * Rules.HZ:
 		phase = "DODGE THE CHARGERS"
+	clock.text = "%02d:%02d" % [seconds / 60, seconds % 60]
 	mission.text = ["A", "B", "C"][game.mode] + "   /   " + phase
 	for player: int in game.vitals:
 		var life: State = game.vitals[player]

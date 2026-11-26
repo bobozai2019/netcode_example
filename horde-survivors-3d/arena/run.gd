@@ -9,6 +9,8 @@ const Code = Wire.Code
 const Probe = preload("res://benchmark/probe.gd")
 const EnemyType = preload("res://actors/enemy_type.gd")
 const DEFAULT_SEED := 78301
+const STRESS_BATCH_SIZE := 24
+const STRESS_BATCH_INTERVAL := 6
 
 @onready var channel: Wire = $Channel
 @onready var spawner: NetcodeSpawner = $Objects/Spawner
@@ -33,6 +35,7 @@ var confirmed_writers: Dictionary[int, bool] = {}
 var recovering: Dictionary[int, State] = {}
 var rng := RandomNumberGenerator.new()
 var mode := 1
+var gameplay: int = Rules.Gameplay.SURVIVAL
 var run_id := 0
 var seed := DEFAULT_SEED
 var start_at := 0
@@ -73,11 +76,12 @@ func _ready() -> void:
 	arena.setup(self, probe.simple)
 	probe.boot()
 
-func open_room(as_host: bool, address: String, port: int, selected_mode: int) -> void:
+func open_room(as_host: bool, address: String, port: int, selected_mode: int, selected_gameplay := Rules.Gameplay.SURVIVAL) -> void:
 	if room_open or port < 1024 or port > 65535 or address.is_empty():
 		return
 	host = as_host
 	mode = selected_mode
+	gameplay = selected_gameplay if host else Rules.Gameplay.SURVIVAL
 	run_id = int(randi() % 2000000000) + 1 if host else 0
 	seed = probe.seed
 	rng.seed = seed
@@ -88,7 +92,7 @@ func open_room(as_host: bool, address: String, port: int, selected_mode: int) ->
 		var options := NetcodeRoomOptions.new()
 		options.max_players = 2
 		options.allow_guest_spawns = false
-		options.custom_properties = {"run": run_id, "mode": mode, "seed": seed}
+		options.custom_properties = {"run": run_id, "mode": mode, "seed": seed, "gameplay": gameplay}
 		status = Netcode.create_room(address, port, options)
 	else:
 		status = Netcode.join_room(address, port)
@@ -103,6 +107,7 @@ func joined() -> void:
 	if not host:
 		run_id = int(properties.get("run", 0))
 		mode = int(properties.get("mode", 1))
+		gameplay = int(properties.get("gameplay", Rules.Gameplay.SURVIVAL))
 		seed = int(properties.get("seed", DEFAULT_SEED))
 		if run_id <= 0:
 			close_room()
@@ -476,6 +481,13 @@ func spawn_wave(count: int, scale := 1.0, chargers := false, health := -1) -> vo
 func update_run() -> void:
 	if battle.book.level > 0:
 		update_upgrades()
+	if is_stress_test():
+		if step >= next_wave:
+			var deficit := Rules.STRESS_ENEMY_LIMIT - battle.book.alive_count
+			if deficit > 0:
+				spawn_wave(mini(deficit, STRESS_BATCH_SIZE))
+			next_wave = step + STRESS_BATCH_INTERVAL
+		return
 	if boss_id > 0 and int(battle.book.enemies[boss_id].hp) <= 0:
 		finish(Rules.Result.VICTORY)
 		return
@@ -492,7 +504,7 @@ func update_run() -> void:
 		var count := 18 if middle else 12
 		if step == 0:
 			count = 24
-		count = mini(count, maxi(0, 128 - battle.book.alive_count))
+		count = mini(count, maxi(0, Rules.SURVIVAL_ENEMY_LIMIT - battle.book.alive_count))
 		spawn_wave(count, 1.0, middle)
 		next_wave = step + (210 if middle else 315)
 
@@ -514,6 +526,9 @@ func auto_attack() -> bool:
 
 func ignore_contact() -> bool:
 	return probe.controls_waves()
+
+func is_stress_test() -> bool:
+	return gameplay == Rules.Gameplay.STRESS_TEST
 
 func update_claims() -> void:
 	var mine: State = motions.get(local_id)

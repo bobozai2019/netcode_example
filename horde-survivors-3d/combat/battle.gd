@@ -495,7 +495,7 @@ func apply_hazards(motion: State, life: State, step: int) -> void:
 			return
 
 func hurt(life: State, damage: int, step: int) -> void:
-	if life.hp > 0 and step >= life.invulnerable_until:
+	if not game.is_stress_test() and life.hp > 0 and step >= life.invulnerable_until:
 		life.hp = maxi(0, life.hp - damage)
 		life.version += 1
 		life.invulnerable_until = step + 46
