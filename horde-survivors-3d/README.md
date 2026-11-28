@@ -13,7 +13,7 @@ python -B launch.py --pair
 
 启动脚本默认使用本项目 `addons/netcode` 随附的 Windows x64 原生插件，并导入项目内的资源。士兵模型和 CC0 许可位于 `assets/quaternius`。首次使用编辑器时，可先运行启动脚本并传入 `--prepare-only` 登记插件和导入资源，再打开 `project.godot` 并按 F5。脚本可用 `--godot-exe` 或环境变量 `NETCODE_GODOT_EXE` 指定 Godot，用 `--sdk` 安装指定的 Windows SDK。
 
-随附插件构建标识为 `35910f4d0e84523e/64ddb8f2e3eed214`，包含原生 Godot 扩展和 TCP 模块。[对应的 Netcode 源码](https://github.com/bobozai2019/photon_fusion_copy/commit/cd9b6b5e6bf548ba6c1f2a4e2e6ea6106bd9ff30)
+随附插件构建标识为 `b8ddb4c42aa28592/64ddb8f2e3eed214`，包含原生 Godot 扩展和 TCP 模块。[对应的 Netcode 源码](https://github.com/bobozai2019/photon_fusion_copy/commit/57b743dd65aeef775d361fd3af66cb606ac091c0)
 
 左边窗口选 B 档、点击 **Host room**。右边使用 **Join room**，同机地址为 `127.0.0.1:43391`。局域网两台机器分别启动一个窗口，客机填写房主的 LAN 地址和房间端口。双方入房并取得角色战斗写权后自动开局。
 
@@ -31,9 +31,9 @@ python -B launch.py --pair
 
 三档均由攻击者确认本地命中目标、玩家确认自己的受击。房主统一保存怪物伤害版本、死亡、掉落、经验和局末结果。Boss、冲锋精英及对局时限均由房主推进。
 
-拾取、升级及其结果在业务队列提交前优先排队，同类拾取和命中请求继续合包。升级按玩家和轮次结算，拾取按石头结算，已排队的相同请求只保留一份。F3 同时显示业务队列长度、最老队龄、TCP/Core 待发量、快照延后计数和业务拒绝计数。持续 12 秒无法发送业务消息，或升级持续 15 秒无法确认时，房间返回大厅并显示原因。
+拾取、升级及其结果在业务队列提交前优先排队，同类拾取和命中请求继续合包。升级按玩家和轮次结算，拾取按石头结算，已排队的相同请求只保留一份。F3 同时显示业务队列长度、最老队龄、TCP/Core 待发量、快照延后计数和业务拒绝计数。拥塞时先延后新攻击，把队列空间留给已经开始的结算。持续 12 秒无法投递业务消息，或升级持续 15 秒无法确认时，房间返回大厅并显示原因。
 
-A 档移动在提交给 SDK 前保留最新输入。新版房主拒绝迟到超过 30 个模拟步的样本。普通远端危险提示如果晚到，至少留 6 步反应时间，并遵守原危险结束时间。
+A 档移动在提交给 SDK 前保留最新输入，最多同时等待 4 条输入的回执。客机首次校时成功后附带模拟步号，房主过滤已过期的样本。校时前按输入序号处理。普通远端危险提示如果晚到，至少留 6 步反应时间，并遵守原危险结束时间。
 
 ## 在编辑器中调整场景
 
@@ -55,7 +55,7 @@ python -B benchmark/run.py --skip-prepare --cases capacity --modes A B C --sizes
 
 回放从真实 TCP 入口双进程运行。验证器将 JSON、逐帧 CSV、TCP 流计数和日志写入示例仓的 `out/horde-survivors-3d/<label>/`。`--delay` 配置 relay 附加的总 RTT，实际 RTT 以客机 SDK 采样为准。`--windowed --simple` 保留显示并减少渲染开销。无窗口运行测量逻辑层。`--capture <局内模拟步>` 可与 `--windowed` 一起保存画面。
 
-下面的命令在 C 档 1024 怪回放中，将客机下行在 relay 连通后第 6 到第 12 秒限至 8 KiB/s，随后恢复常速。摘要包含业务队列峰值与队龄、快照延后计数、写入确认合并计数和双方账本校验。
+下面的命令在 C 档 1024 怪回放中，将客机下行在 relay 连通后第 6 到第 12 秒限至 8 KiB/s，随后恢复常速。传入 `--scenes burst` 可复跑爆发战斗。摘要包含业务队列峰值与队龄、快照延后计数、写入确认合并计数和双方账本校验。
 
 ```powershell
 python -B benchmark/run.py --skip-prepare --cases capacity --modes C --sizes 1024 --warmup 6 --seconds 7 --delay 40 --slow-downlink-kib 8 --slow-downlink-window 6 12 --label queue-recovery

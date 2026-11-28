@@ -602,7 +602,7 @@ func summary() -> void:
 		"rpc_backlog": game.channel.backlog(), "rpc_backlog_peak": game.channel.queue_peak,
 		"rpc_queue_peak_age_ms": game.channel.peak_queue_age_ms, "movement_coalesced": game.channel.movement_coalesced,
 		"claim_rejections": game.claim_rejections, "upgrade_rejections": game.upgrade_rejections,
-		"timed_out_hits": game.battle.timed_out_hits,
+		"timed_out_hits": game.battle.timed_out_hits, "deferred_attack_steps": game.battle.deferred_attack_steps,
 		"engine_static_memory_peak": int(Performance.get_monitor(Performance.MEMORY_STATIC_MAX)),
 		"owned": percentiles(ownership), "visible": percentiles(visible), "population": percentiles(population)}
 	if mark.has("last"):

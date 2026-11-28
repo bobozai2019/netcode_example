@@ -418,7 +418,8 @@ func update_motion(delta: float) -> void:
 	if mode == 0 and not host and (step % 3 == 0 or axis != remote_axis):
 		local_sequence += 1
 		remote_axis = axis
-		channel.send_movement(host_id, run_id, local_sequence, axis, step if action_results else -1)
+		var source_step := step if action_results and Netcode.get_rtt() > 0.0 else -1
+		channel.send_movement(host_id, run_id, local_sequence, axis, source_step)
 	for player: int in motions:
 		var motion := motions[player]
 		if not motion.sync.is_write_ready():
@@ -440,7 +441,7 @@ func receive_axis(sender: int, id: int, sequence: int, axis: Vector2, source_ste
 			return
 		remote_axis = axis.limit_length()
 		remote_sequence = sequence
-		remote_input_until = (mini(step, source_step) if source_step >= 0 else step) + 30
+		remote_input_until = step + 30
 
 func update_enemies(delta: float) -> void:
 	for enemy: State in enemies.values():

@@ -14,8 +14,10 @@ const MAX_FIELDS := 48
 const IN_FLIGHT := 48
 const PRIORITY_IN_FLIGHT_RESERVE := 8
 const RECEIVE_WINDOW := 4096
-const QUEUE_LIMIT := 2048
-const RESULT_RESERVE := 128
+const COMBAT_QUEUE_LIMIT := 128
+const COMBAT_QUEUE_AGE_MS := 750
+const REQUIRED_QUEUE_LIMIT := 2176
+const MOVEMENT_IN_FLIGHT := 4
 const QUEUE_TIMEOUT_MS := 12000
 const SEND_RETRY_MS := 50
 const MOVEMENT_TIMEOUT_MS := 250
@@ -38,7 +40,7 @@ var outbound_hits: Dictionary[Vector3i, bool] = {}
 var next_send_at := 0
 var failure := false
 var movement_latest: Dictionary = {}
-var movement_result: NetcodeRpcResult
+var movement_inflight: Array[NetcodeRpcResult] = []
 var movement_coalesced := 0
 var oldest_queue_ms := 0
 var peak_queue_age_ms := 0
@@ -49,15 +51,17 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	Netcode.unregister_broadcast_receiver(self)
 
-func send(recipient: int, code: int, fields: PackedInt32Array) -> void:
+func send(recipient: int, code: int, fields: PackedInt32Array) -> bool:
 	assert(fields.size() <= MAX_FIELDS)
 	if failure:
-		return
+		return false
 	if recipient == Netcode.get_local_player_id():
 		message.emit(recipient, code, fields)
-		return
+		return true
 	if peer == 0 or (recipient != 0 and recipient != peer):
-		return
+		return recipient == 0
+	if code in [Code.ATTACK, Code.CHAIN] and not can_start_combat():
+		return false
 	var keys := PackedInt32Array()
 	var hit_keys: Array[Vector3i] = []
 	if code == Code.HIT:
@@ -69,19 +73,18 @@ func send(recipient: int, code: int, fields: PackedInt32Array) -> void:
 				unique_hits.append(fields[index + 1])
 				hit_keys.append(hit)
 		if hit_keys.is_empty():
-			return
+			return true
 		fields = unique_hits
 	elif code == Code.CLAIM:
 		for index in range(1, fields.size(), 2):
 			keys.append(fields[index])
 	elif code == Code.CHOOSE:
 		if outbound_choices.has(fields[1]):
-			return
+			return true
 		keys.append(fields[1])
-	var is_result := code in [Code.PICKUP, Code.UPGRADE, Code.RECEIPT, Code.END, Code.CLAIM_REJECT, Code.UPGRADE_REJECT]
-	if backlog() >= QUEUE_LIMIT + (RESULT_RESERVE if is_result else 0):
-		fail_stream("Network action queue is full. The room was closed.")
-		return
+	if backlog() >= REQUIRED_QUEUE_LIMIT:
+		fail_stream("Required network actions filled the queue. The room was closed.")
+		return false
 	for key in keys:
 		if code == Code.CLAIM:
 			outbound_claims[key] = true
@@ -99,6 +102,10 @@ func send(recipient: int, code: int, fields: PackedInt32Array) -> void:
 	else:
 		queue.append(packet)
 	queue_peak = maxi(queue_peak, backlog())
+	return true
+
+func can_start_combat() -> bool:
+	return not failure and backlog() < COMBAT_QUEUE_LIMIT and oldest_queue_ms < COMBAT_QUEUE_AGE_MS
 
 func is_claim_queued(id: int) -> bool:
 	return outbound_claims.has(id)
@@ -129,7 +136,7 @@ func set_peer(player: int) -> void:
 	outbound_choices.clear()
 	outbound_hits.clear()
 	movement_latest.clear()
-	movement_result = null
+	movement_inflight.clear()
 
 func backlog() -> int:
 	return queue.size() - queue_head + inflight.size()
@@ -210,17 +217,23 @@ func send_movement(master: int, run_id: int, sequence: int, axis: Vector2, sourc
 		"queued_at": Time.get_ticks_msec()}
 
 func flush_movement(now: int) -> void:
-	if movement_latest.is_empty() or (movement_result != null and not movement_result.is_finished()):
+	for i in range(movement_inflight.size() - 1, -1, -1):
+		if movement_inflight[i].is_finished():
+			movement_inflight.remove_at(i)
+	if movement_latest.is_empty() or movement_inflight.size() >= MOVEMENT_IN_FLIGHT:
 		return
 	var sample := movement_latest
 	movement_latest = {}
 	if now - int(sample.queued_at) >= MOVEMENT_TIMEOUT_MS:
 		return
+	var result: NetcodeRpcResult
 	if int(sample.source_step) >= 0:
-		movement_result = Netcode.rpc_to_player(peer, input_sample_at, sample.run_id, sample.sequence, sample.axis, sample.source_step)
+		result = Netcode.rpc_to_player(peer, input_sample_at, sample.run_id, sample.sequence, sample.axis, sample.source_step)
 	else:
-		movement_result = Netcode.rpc_to_player(peer, input_sample, sample.run_id, sample.sequence, sample.axis)
-	if movement_result != null and (not movement_result.is_finished() or movement_result.get_error().is_empty()):
+		result = Netcode.rpc_to_player(peer, input_sample, sample.run_id, sample.sequence, sample.axis)
+	if result != null and (not result.is_finished() or result.get_error().is_empty()):
+		if not result.is_finished():
+			movement_inflight.append(result)
 		sent += 1
 
 @rpc("any_peer", "call_remote", "reliable")

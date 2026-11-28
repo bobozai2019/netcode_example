@@ -13,6 +13,7 @@ const RETRY_STEPS := 120
 const HIT_RETRY_TIMEOUT_US := 8_000_000
 const MIN_REMOTE_DANGER_WARNING := 6
 const MAX_RETRIES_PER_PASS := 88
+const COMBAT_PENDING_LIMIT := 384
 const CONTACT_DAMAGE := 9
 
 var game
@@ -40,6 +41,7 @@ var danger_reaction: Array[float] = []
 var late_dangers := 0
 var dropped_old_commits := 0
 var timed_out_hits := 0
+var deferred_attack_steps := 0
 var hit_flashes: Dictionary[int, int] = {}
 var pause_remote_commits := false
 
@@ -52,7 +54,10 @@ func update(step: int) -> void:
 	if mine != null and life != null and life.sync.is_write_ready():
 		apply_hazards(mine, life, step)
 		if life.hp > 0 and game.auto_attack():
-			fire_available(mine, step)
+			if pending.size() < COMBAT_PENDING_LIMIT and game.channel.can_start_combat():
+				fire_available(mine, step)
+			else:
+				deferred_attack_steps += 1
 	for index in range(flying.size() - 1, -1, -1):
 		var knife := flying[index]
 		if step >= int(knife.start) + 50 or int(knife.left) == 0:
@@ -112,7 +117,9 @@ func start_attack(weapon: int, origin: Vector2, direction: Vector2, step: int, g
 	receive(game.local_id, Code.ATTACK, fields)
 	if not attacks.has(Vector2i(game.local_id, attack_number)):
 		return attack_number
-	game.channel.send(0, Code.ATTACK, fields)
+	if not game.channel.send(0, Code.ATTACK, fields):
+		attacks.erase(Vector2i(game.local_id, attack_number))
+		return attack_number
 	if generate:
 		render_attack(game.local_id, fields, build)
 	if generate and weapon == Rules.Weapon.LIGHTNING:
