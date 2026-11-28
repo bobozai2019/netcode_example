@@ -10,6 +10,8 @@ const HIT_SIZE := 2
 const COMMIT_SIZE := 5
 const RECEIPT_SIZE := 11
 const RETRY_STEPS := 120
+const HIT_RETRY_TIMEOUT_US := 8_000_000
+const MIN_REMOTE_DANGER_WARNING := 6
 const MAX_RETRIES_PER_PASS := 88
 const CONTACT_DAMAGE := 9
 
@@ -37,6 +39,7 @@ var attack_feedback: Array[float] = []
 var danger_reaction: Array[float] = []
 var late_dangers := 0
 var dropped_old_commits := 0
+var timed_out_hits := 0
 var hit_flashes: Dictionary[int, int] = {}
 var pause_remote_commits := false
 
@@ -71,7 +74,7 @@ func update(step: int) -> void:
 				hit_flashes.erase(id)
 
 func fire_available(mine: State, step: int) -> void:
-	var build: PackedInt32Array = game.build_for(game.local_id)
+	var build: PackedInt32Array = game.build_at_step(game.local_id, step)
 	if step >= next_attack[Rules.Weapon.KNIFE]:
 		var nearest := nearest_enemy(mine.position_xz, 16.0)
 		if nearest != null:
@@ -102,11 +105,13 @@ func nearest_enemy(origin: Vector2, radius: float, excluded: Dictionary = {}) ->
 func start_attack(weapon: int, origin: Vector2, direction: Vector2, step: int, generate := true) -> int:
 	var started := Time.get_ticks_usec()
 	attack_number += 1
-	var build: PackedInt32Array = game.build_for(game.local_id)
+	var build: PackedInt32Array = game.build_at_step(game.local_id, step)
 	var fields := PackedInt32Array([game.run_id, attack_number, weapon, step, build[0], game.seed ^ attack_number])
 	fields.append_array(Wire.pack_point(origin))
 	fields.append_array(Wire.pack_point(direction))
 	receive(game.local_id, Code.ATTACK, fields)
+	if not attacks.has(Vector2i(game.local_id, attack_number)):
+		return attack_number
 	game.channel.send(0, Code.ATTACK, fields)
 	if generate:
 		render_attack(game.local_id, fields, build)
@@ -222,6 +227,9 @@ func advance_knife(knife: Dictionary, step: int, local: bool) -> void:
 	submit(knife.attack, 0, candidates)
 
 func submit(attack: int, segment: int, selected: Array[State]) -> void:
+	var attack_info: PackedInt32Array = attacks.get(Vector2i(game.local_id, attack), PackedInt32Array())
+	if attack_info.is_empty():
+		return
 	var fields := PackedInt32Array([game.run_id, attack, segment, game.step])
 	for enemy in selected:
 		var key := Vector4i(game.local_id, attack, enemy.entity_id, segment)
@@ -230,8 +238,6 @@ func submit(attack: int, segment: int, selected: Array[State]) -> void:
 			pending[key] = hit_at
 			retry_after[key] = game.step + RETRY_STEPS
 			hit_flashes[enemy.entity_id] = game.step + 8
-			var origin := Vector2i(key.x, key.y)
-			var attack_info := attacks[origin]
 			game.arena.hit(enemy.observed_position(), game.step, Rules.damage(attack_info[2]), hit_at)
 		fields.append_array(PackedInt32Array([enemy.entity_id, enemy.generation]))
 		if fields.size() >= Wire.MAX_FIELDS:
@@ -242,7 +248,17 @@ func submit(attack: int, segment: int, selected: Array[State]) -> void:
 
 func route_hit(sender: int, fields: PackedInt32Array) -> void:
 	var attack := Vector2i(sender, fields[1])
-	if not attacks.has(attack) or (fields.size() - 4) % HIT_SIZE != 0 or not valid_segment(attacks[attack][2], fields[2]):
+	if (fields.size() - 4) % HIT_SIZE != 0:
+		return
+	if not attacks.has(attack) or not valid_segment(attacks[attack][2], fields[2]):
+		var denied := PackedInt32Array([game.run_id])
+		for i in range(4, fields.size(), HIT_SIZE):
+			if denied.size() + RECEIPT_SIZE > Wire.MAX_FIELDS:
+				game.channel.send(sender, Code.RECEIPT, denied)
+				denied.resize(1)
+			denied.append_array(PackedInt32Array([sender, fields[1], fields[i], fields[2], Ledger.HitResult.INVALID, 0, 0, 0, 0, 0, 0]))
+		if denied.size() > 1:
+			game.channel.send(sender, Code.RECEIPT, denied)
 		return
 	received_hit_batch_sizes.append((fields.size() - 4) / 2)
 	var by_owner := {}
@@ -423,14 +439,21 @@ func replay_early_receipts(id: int) -> void:
 	early_receipts.erase(id)
 
 func retry(step: int) -> void:
-	if game.channel.backlog() > 96:
-		return
+	var now := Time.get_ticks_usec()
+	var allow_retry: bool = game.channel.backlog() <= 96
 	var groups := {}
 	var added := 0
 	for key: Vector4i in pending.keys():
-		if added >= MAX_RETRIES_PER_PASS:
-			break
-		if step < int(retry_after.get(key, 0)):
+		if now - pending[key] >= HIT_RETRY_TIMEOUT_US:
+			timed_out_hits += 1
+			pending.erase(key)
+			retry_after.erase(key)
+			if chains.has(key.y):
+				resolve_chain(key.y, key.z, false)
+			continue
+		if not allow_retry or added >= MAX_RETRIES_PER_PASS:
+			continue
+		if step < int(retry_after.get(key, 0)) or game.channel.is_hit_queued(key.y, key.z, key.w):
 			continue
 		added += 1
 		retry_after[key] = step + RETRY_STEPS
@@ -470,12 +493,15 @@ func receive_danger(sender: int, fields: PackedInt32Array) -> void:
 		var enemy: State = game.enemies.get(source)
 		if enemy == null or (sender != game.host_id and sender != enemy.controller):
 			return
-	if game.step >= fields[5]:
+	var active_at := fields[4]
+	if sender != game.local_id:
+		active_at = maxi(active_at, game.step + MIN_REMOTE_DANGER_WARNING)
+	if game.step >= fields[5] or active_at >= fields[5]:
 		late_dangers += 1
 		return
-	danger_reaction.append(maxf(0.0, (fields[4] - game.step) * 1000.0 / Rules.HZ))
+	danger_reaction.append(maxf(0.0, (active_at - game.step) * 1000.0 / Rules.HZ))
 	hazards[id] = {"origin": Wire.point(fields, 10), "end": Wire.point(fields, 12), "radius": fields[7] * 0.001,
-		"begin": fields[3], "active": fields[4], "end_step": fields[5], "damage": fields[6], "spent": false}
+		"begin": fields[3], "active": active_at, "end_step": fields[5], "damage": fields[6], "spent": false}
 
 func apply_hazards(motion: State, life: State, step: int) -> void:
 	for id: Vector2i in hazards.keys():

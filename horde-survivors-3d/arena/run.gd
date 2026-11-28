@@ -14,6 +14,9 @@ const STRESS_BATCH_INTERVAL := 6
 const CLAIM_RETRY_STEPS := Rules.HZ
 const PICKUP_XP_FIELDS := 4
 const UPGRADE_RETRY_MS := 1000
+const UPGRADE_TIMEOUT_MS := 15000
+
+static var reconnect_status := ""
 
 @onready var channel: Wire = $Channel
 @onready var spawner: NetcodeSpawner = $Objects/Spawner
@@ -50,6 +53,7 @@ var next_wave := 0
 var last_spawn_group := 0
 var guest_ready := false
 var pickup_batches := false
+var action_results := false
 var lobby_status := "Host a room or join a teammate."
 var room_open := false
 var sent_ready := false
@@ -58,9 +62,13 @@ var next_claim := 0
 var claim_number := 0
 var claim_waits: Dictionary[int, int] = {}
 var claimed: Dictionary[int, int] = {}
+var claim_serials: Dictionary[int, int] = {}
+var claim_rejections := 0
+var upgrade_rejections := 0
 var next_choice := 0
 var choice_request := -1
 var choice_retry_at := 0
+var choice_started_at := 0
 var remote_axis := Vector2.ZERO
 var remote_sequence := 0
 var remote_input_until := 0
@@ -72,6 +80,9 @@ var write_waits: Array[float] = []
 var handoffs := 0
 
 func _ready() -> void:
+	if not reconnect_status.is_empty():
+		lobby_status = reconnect_status
+		reconnect_status = ""
 	battle = Battle.new(self)
 	probe = Probe.new(self)
 	Netcode.room_joined.connect(joined)
@@ -97,7 +108,7 @@ func open_room(as_host: bool, address: String, port: int, selected_mode: int, se
 		var options := NetcodeRoomOptions.new()
 		options.max_players = 2
 		options.allow_guest_spawns = false
-		options.custom_properties = {"run": run_id, "mode": mode, "seed": seed, "gameplay": gameplay, "pickup_batches": true}
+		options.custom_properties = {"run": run_id, "mode": mode, "seed": seed, "gameplay": gameplay, "pickup_batches": true, "action_results": true}
 		status = Netcode.create_room(address, port, options)
 	else:
 		status = Netcode.join_room(address, port)
@@ -114,6 +125,7 @@ func joined() -> void:
 		mode = int(properties.get("mode", 1))
 		gameplay = int(properties.get("gameplay", Rules.Gameplay.SURVIVAL))
 		pickup_batches = bool(properties.get("pickup_batches", false))
+		action_results = pickup_batches and bool(properties.get("action_results", false))
 		seed = int(properties.get("seed", DEFAULT_SEED))
 		if run_id <= 0:
 			close_room()
@@ -129,11 +141,20 @@ func close_room() -> void:
 		Netcode.leave_room()
 	call_deferred("reload_lobby")
 
+func action_stream_failed(reason: String) -> void:
+	probe.event("action_stream_failed", {"reason": reason})
+	reconnect_status = reason
+	close_room()
+
 func reload_lobby() -> void:
 	get_tree().reload_current_scene()
 
 func left_room() -> void:
 	room_open = false
+	motions.clear()
+	vitals.clear()
+	enemies.clear()
+	recovering.clear()
 	if departing or probe.active:
 		return
 	if start_at > 0 or local_id != 0:
@@ -262,7 +283,10 @@ func _physics_process(delta: float) -> void:
 	battle.flush_receipts()
 	update_claims()
 	if choice_request != -1 and Time.get_ticks_msec() >= choice_retry_at:
-		send_upgrade_request()
+		if Time.get_ticks_msec() - choice_started_at >= UPGRADE_TIMEOUT_MS:
+			channel.fail_stream("An upgrade could not be confirmed. The room was closed.")
+		else:
+			send_upgrade_request()
 	combat_us += Time.get_ticks_usec() - combat_start
 	if host and not probe.controls_waves():
 		update_run()
@@ -300,6 +324,8 @@ func update_lobby() -> void:
 			guest_id = local_id
 			var ready := PackedInt32Array([run_id])
 			if pickup_batches:
+				ready.append(1)
+			if action_results:
 				ready.append(1)
 			channel.send(host_id, Code.READY, ready)
 
@@ -392,7 +418,7 @@ func update_motion(delta: float) -> void:
 	if mode == 0 and not host and (step % 3 == 0 or axis != remote_axis):
 		local_sequence += 1
 		remote_axis = axis
-		channel.send_movement(host_id, run_id, local_sequence, axis)
+		channel.send_movement(host_id, run_id, local_sequence, axis, step if action_results else -1)
 	for player: int in motions:
 		var motion := motions[player]
 		if not motion.sync.is_write_ready():
@@ -408,11 +434,13 @@ func update_motion(delta: float) -> void:
 		if motion.velocity != Vector2.ZERO or step - motion.source_step >= 15:
 			motion.source_step = step
 
-func receive_axis(sender: int, id: int, sequence: int, axis: Vector2) -> void:
+func receive_axis(sender: int, id: int, sequence: int, axis: Vector2, source_step: int) -> void:
 	if host and mode == 0 and id == run_id and sender == guest_id and sequence > remote_sequence and axis.is_finite():
+		if source_step >= 0 and step - source_step >= 30:
+			return
 		remote_axis = axis.limit_length()
 		remote_sequence = sequence
-		remote_input_until = step + 30
+		remote_input_until = (mini(step, source_step) if source_step >= 0 else step) + 30
 
 func update_enemies(delta: float) -> void:
 	for enemy: State in enemies.values():
@@ -553,7 +581,7 @@ func update_claims() -> void:
 	var fields := PackedInt32Array([run_id])
 	for id: int in battle.book.stones:
 		var stone: Dictionary = battle.book.stones[id]
-		if int(stone.winner) == 0 and step >= int(claim_waits.get(id, 0)) and mine.position_xz.distance_squared_to(stone.position) <= 1.95 * 1.95:
+		if int(stone.winner) == 0 and step >= int(claim_waits.get(id, 0)) and not channel.is_claim_queued(id) and mine.position_xz.distance_squared_to(stone.position) <= 1.95 * 1.95:
 			append_claim(fields, id)
 			if fields.size() + 2 > field_limit:
 				channel.send(host_id, Code.CLAIM, fields)
@@ -562,29 +590,37 @@ func update_claims() -> void:
 		channel.send(host_id, Code.CLAIM, fields)
 
 func claim(id: int) -> void:
+	if channel.is_claim_queued(id):
+		return
 	var fields := PackedInt32Array([run_id])
 	append_claim(fields, id)
 	channel.send(host_id, Code.CLAIM, fields)
 
 func append_claim(fields: PackedInt32Array, id: int) -> void:
-	claim_number += 1
+	if not claim_serials.has(id):
+		claim_number += 1
+		claim_serials[id] = claim_number
+		arena.suction(id, local_id, step)
 	claim_waits[id] = step + CLAIM_RETRY_STEPS
-	arena.suction(id, local_id, step)
 	fields.append(id)
-	fields.append(claim_number)
+	fields.append(claim_serials[id])
 
 func accept_claims(player: int, fields: PackedInt32Array) -> void:
-	if not members.has(player) or not motions.has(player) or not vitals.has(player) or vitals[player].hp <= 0:
-		return
+	var eligible := members.has(player) and motions.has(player) and vitals.has(player) and vitals[player].hp > 0 and result == Rules.Result.LIVE
 	var picked := PackedInt32Array()
-	var origin: Vector2 = motions[player].position_xz
+	var denied := PackedInt32Array([run_id])
+	var origin: Vector2 = motions[player].position_xz if eligible else Vector2.ZERO
 	for index in range(1, fields.size(), 2):
 		var id := fields[index]
 		var stone: Dictionary = battle.book.stones.get(id, {})
-		if stone.is_empty() or (int(stone.winner) == 0 and origin.distance_squared_to(stone.position) > 3.0 * 3.0):
+		if not eligible or stone.is_empty() or (int(stone.winner) == 0 and origin.distance_squared_to(stone.position) > 3.0 * 3.0):
+			denied.append(id)
+			denied.append(fields[index + 1])
 			continue
 		picked.append(id)
 		picked.append(battle.book.take_stone(id, player))
+	if denied.size() > 1 and (player == local_id or action_results):
+		channel.send(player, Code.CLAIM_REJECT, denied)
 	if picked.is_empty():
 		return
 	var reply := PackedInt32Array([run_id, picked[0], picked[1], battle.book.xp_version, battle.book.experience, battle.book.level, battle.book.unspent_experience])
@@ -608,6 +644,7 @@ func record_pickup(id: int, winner: int) -> void:
 		battle.book.stones[id].winner = winner
 	claimed[id] = winner
 	claim_waits.erase(id)
+	claim_serials.erase(id)
 	probe.event("pickup", {"stone": id, "winner": winner, "xp": battle.book.experience})
 
 func ensure_build(player: int) -> void:
@@ -618,6 +655,15 @@ func build_for(player: int) -> PackedInt32Array:
 	ensure_build(player)
 	var versions := builds[player]
 	return versions[versions.size() - 1]
+
+func build_at_step(player: int, used_step: int) -> PackedInt32Array:
+	ensure_build(player)
+	var versions := builds[player]
+	for version in range(versions.size() - 1, -1, -1):
+		var build: PackedInt32Array = versions[version]
+		if build[4] <= used_step:
+			return build
+	return versions[0]
 
 func build_version(player: int, version: int, used_step: int) -> PackedInt32Array:
 	var build: PackedInt32Array = builds.get(player, {}).get(version, PackedInt32Array())
@@ -636,6 +682,7 @@ func pick_upgrade(option: int) -> void:
 	if next_choice <= 0 or choice_request != -1 or option < 0 or option > 2:
 		return
 	choice_request = option
+	choice_started_at = Time.get_ticks_msec()
 	send_upgrade_request()
 
 func send_upgrade_request() -> void:
@@ -649,7 +696,10 @@ func accept_upgrade(player: int, round_no: int, option: int) -> void:
 		if player != local_id:
 			channel.send(player, Code.UPGRADE, upgrade_fields(player, int(battle.book.choices[key]), previous))
 		return
-	if not members.has(player) or not vitals.has(player) or vitals[player].hp <= 0 or round_no <= 0 or option not in [0, 1, 2] or round_no != int(pending_rounds.get(player, 0)):
+	if not members.has(player) or not vitals.has(player) or vitals[player].hp <= 0 or result != Rules.Result.LIVE or round_no <= 0 or option not in [0, 1, 2] or round_no != int(pending_rounds.get(player, 0)):
+		if player == local_id or action_results:
+			var allowed := int(pending_rounds.get(player, 0)) if vitals.has(player) and vitals[player].hp > 0 and result == Rules.Result.LIVE else 0
+			channel.send(player, Code.UPGRADE_REJECT, PackedInt32Array([run_id, round_no, option, allowed]))
 		return
 	pending_rounds[player] = 0
 	var build := build_for(player).duplicate()
@@ -692,8 +742,11 @@ func receive(sender: int, code: int, fields: PackedInt32Array) -> void:
 		return
 	match code:
 		Code.READY:
-			if host and guest_id == sender and (fields.size() == 1 or (fields.size() == 2 and fields[1] == 1)):
-				pickup_batches = fields.size() == 2
+			var supports_pickup := fields.size() in [2, 3] and fields[1] == 1
+			var supports_results := fields.size() == 3 and supports_pickup and fields[2] == 1
+			if host and guest_id == sender and (fields.size() == 1 or (fields.size() == 2 and supports_pickup) or supports_results):
+				pickup_batches = supports_pickup
+				action_results = supports_results
 				guest_ready = true
 		Code.START:
 			if not host and sender == host_id and fields.size() == 2 and start_at == 0:
@@ -708,16 +761,28 @@ func receive(sender: int, code: int, fields: PackedInt32Array) -> void:
 						enemy.waiting = false
 		Code.CLAIM:
 			var valid_batch := pickup_batches and fields.size() > 3 and fields.size() % 2 == 1 and fields.size() + PICKUP_XP_FIELDS <= Wire.MAX_FIELDS
-			if host and (fields.size() == 3 or valid_batch) and result == Rules.Result.LIVE:
+			if host and (fields.size() == 3 or valid_batch):
 				accept_claims(sender, fields)
+		Code.CLAIM_REJECT:
+			if sender == host_id and fields.size() > 1 and fields.size() % 2 == 1:
+				for index in range(1, fields.size(), 2):
+					var stone := fields[index]
+					if claim_serials.get(stone, 0) == fields[index + 1]:
+						claim_rejections += 1
+						claim_waits[stone] = step + CLAIM_RETRY_STEPS
 		Code.PICKUP:
 			if sender == host_id and fields.size() >= 7 and fields.size() % 2 == 1:
 				receive_pickup(fields)
 				if not host and build_for(local_id)[0] < battle.book.level and next_choice == 0 and vitals.has(local_id) and vitals[local_id].hp > 0:
 					next_choice = build_for(local_id)[0] + 1
 		Code.CHOOSE:
-			if host and fields.size() == 3 and result == Rules.Result.LIVE:
+			if host and fields.size() == 3:
 				accept_upgrade(sender, fields[1], fields[2])
+		Code.UPGRADE_REJECT:
+			if sender == host_id and fields.size() == 4 and fields[1] == next_choice and fields[2] == choice_request:
+				upgrade_rejections += 1
+				choice_request = -1
+				next_choice = fields[3]
 		Code.UPGRADE:
 			if sender == host_id and fields.size() == 8:
 				receive_upgrade(fields)

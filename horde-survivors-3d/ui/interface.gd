@@ -92,6 +92,12 @@ func update_display(visible_enemies: int, motion_metrics: MotionMetrics) -> void
 			waiting += int(enemy.waiting)
 		debug_label.text = "%d visible · %d owned · %d delegated · %d baseline waits · %d handoffs · %d hits pending · %.1f ms RTT" % [
 			visible_enemies, owned, game.enemies.size() - owned - waiting, waiting, game.handoffs, game.battle.pending.size(), Netcode.get_rtt() * 1000.0]
+		var transport := Netcode.get_transport_stats()
+		debug_label.text += "\nActions %d queued · oldest %d ms · TCP/Core %d KiB · snapshot deferrals %d" % [
+			game.channel.backlog(), game.channel.oldest_queue_ms, int(transport.get("queued_bytes", 0)) / 1024,
+			transport.get("snapshot_backpressure_skips", 0)]
+		debug_label.text += "\nPickups %d rejected · upgrades %d rejected · hits %d timed out" % [
+			game.claim_rejections, game.upgrade_rejections, game.battle.timed_out_hits]
 		var motion := motion_metrics.summary()
 		var frame := MotionMetrics.percentiles(motion_metrics.frames)
 		debug_label.text += "\nFPS %d  ·  Frame P95 %s ms  ·  Monster update P95 %s ms  ·  Step P95 %s cm  ·  Held %s%%" % [

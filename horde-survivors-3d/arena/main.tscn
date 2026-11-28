@@ -38,6 +38,7 @@ stone_tint = Color(0.501961, 0.945098, 0.827451, 1)
 [node name="EnemyTypes" parent="." instance=ExtResource("10")]
 
 [connection signal="message" from="Channel" to="." method="receive"]
+[connection signal="failed" from="Channel" to="." method="action_stream_failed"]
 [connection signal="movement" from="Channel" to="." method="receive_axis"]
 [connection signal="spawned" from="Objects/Spawner" to="." method="register_state"]
 [connection signal="despawned" from="Objects/Spawner" to="." method="unregister_state"]

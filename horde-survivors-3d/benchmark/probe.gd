@@ -230,8 +230,13 @@ func after_step() -> void:
 				game.channel.send(game.guest_id, Wire.Code.BENCH_DONE, PackedInt32Array([game.run_id]))
 				summary_after_ms = Time.get_ticks_msec() + 1500
 	elif test == "rules" and game.step >= 950:
-		check_rules()
-		summary()
+		if once("rules_checked", 0):
+			check_rules()
+			if not game.host:
+				game.channel.send(game.host_id, Wire.Code.BENCH_DRAINED, PackedInt32Array([game.run_id]))
+		if game.host and remote_drained and once("done", 0):
+			game.channel.send(game.guest_id, Wire.Code.BENCH_DONE, PackedInt32Array([game.run_id]))
+			summary_after_ms = Time.get_ticks_msec() + 1500
 	elif test in ["before", "after"] and game.host and game.step >= 525:
 		var target: int = 100
 		check(game.handoffs == 1, "one delegated enemy recovered")
@@ -485,7 +490,7 @@ func settled() -> void:
 	summary()
 
 func drain_message(sender: int, code: int) -> void:
-	if test != "capacity" or not sampled:
+	if test != "rules" and (test != "capacity" or not sampled):
 		return
 	if code == Wire.Code.BENCH_DRAINED and game.host and sender == game.guest_id:
 		remote_drained = true
@@ -590,7 +595,14 @@ func summary() -> void:
 		"danger_reaction_ms": percentiles(game.battle.danger_reaction), "late_dangers": game.battle.late_dangers,
 		"state_age_ms": percentiles(ages), "rtt_ms": percentiles(rtts), "queued_bytes": percentiles(queue_bytes),
 		"peak_queued_bytes": peak.get("provider_peak_queued_bytes", 0), "rpc_rejected": game.channel.rejected,
+		"snapshot_backpressure_skips": peak.get("snapshot_backpressure_skips", 0),
+		"snapshot_soft_skips": peak.get("snapshot_soft_skips", 0),
+		"snapshot_budget_yields": peak.get("snapshot_budget_yields", 0),
+		"authority_ack_coalesces": peak.get("authority_ack_coalesces", 0),
 		"rpc_backlog": game.channel.backlog(), "rpc_backlog_peak": game.channel.queue_peak,
+		"rpc_queue_peak_age_ms": game.channel.peak_queue_age_ms, "movement_coalesced": game.channel.movement_coalesced,
+		"claim_rejections": game.claim_rejections, "upgrade_rejections": game.upgrade_rejections,
+		"timed_out_hits": game.battle.timed_out_hits,
 		"engine_static_memory_peak": int(Performance.get_monitor(Performance.MEMORY_STATIC_MAX)),
 		"owned": percentiles(ownership), "visible": percentiles(visible), "population": percentiles(population)}
 	if mark.has("last"):

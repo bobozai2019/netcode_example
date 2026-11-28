@@ -30,13 +30,16 @@ def open_port():
 class Relay:
     """Delay each TCP stream independently and count its application stream bytes."""
 
-    def __init__(self, target, delay_ms, peer=None):
+    def __init__(self, target, delay_ms, peer=None, *, downlink_kib=0, downlink_window=None):
         self.target = target
         self.peer = peer
         self.delay = delay_ms / 2000
         self.transferred = [0, 0]
         self.pairs = set()
         self.listener = None
+        self.downlink_bytes_per_sec = downlink_kib * 1024
+        self.downlink_window = downlink_window
+        self.throttled_bytes = 0
 
     async def start(self, address="127.0.0.1", port=0):
         self.listener = await asyncio.start_server(self.attach, address, port)
@@ -51,7 +54,7 @@ class Relay:
         host_out = None
         jobs = []
         try:
-            host_in, host_out = await asyncio.open_connection("127.0.0.1", self.target)
+            host_in, host_out = await self.connect_host()
             jobs = [asyncio.create_task(self.forward(guest_in, host_out, 0)),
                     asyncio.create_task(self.forward(host_in, guest_out, 1))]
             await asyncio.wait(jobs, return_when=asyncio.FIRST_COMPLETED)
@@ -66,12 +69,36 @@ class Relay:
                     writer.close()
             self.pairs.discard(task)
 
+    async def connect_host(self):
+        if not self.downlink_bytes_per_sec:
+            return await asyncio.open_connection("127.0.0.1", self.target)
+        upstream = socket.socket()
+        try:
+            upstream.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4096)
+            upstream.setblocking(False)
+            await asyncio.get_running_loop().sock_connect(upstream, ("127.0.0.1", self.target))
+            return await asyncio.open_connection(sock=upstream, limit=4096)
+        except BaseException:
+            upstream.close()
+            raise
+
     async def forward(self, reader, writer, direction):
+        window = self.downlink_window if direction == 1 else None
+        started = monotonic()
         queue = asyncio.Queue(maxsize=256)
 
         async def read():
             try:
-                while data := await reader.read(64 * 1024):
+                while True:
+                    elapsed = monotonic() - started
+                    limited = window and window[0] <= elapsed < window[1]
+                    data = await reader.read(512 if limited else 64 * 1024)
+                    if not data:
+                        break
+                    if limited:
+                        remaining = max(0, started + window[1] - monotonic())
+                        await asyncio.sleep(min(len(data) / self.downlink_bytes_per_sec, remaining))
+                        self.throttled_bytes += len(data)
                     await queue.put((monotonic() + self.delay, data))
             except (ConnectionError, OSError):
                 pass
@@ -174,7 +201,8 @@ def case_results(folder, exits, case, history, shared_clock=True):
 async def pair(godot, folder, options, case, mode, size, scene, delay):
     folder.mkdir(parents=True, exist_ok=True)
     host_port = open_port()
-    relay = Relay(host_port, delay)
+    relay = Relay(host_port, delay, downlink_kib=options.slow_downlink_kib,
+                  downlink_window=options.slow_downlink_window)
     guest_port = await relay.start()
     host = player(godot, folder, "host", host_port, options, case, mode, size, scene)
     guest = None
@@ -192,6 +220,8 @@ async def pair(godot, folder, options, case, mode, size, scene, delay):
         (folder / "tcp.json").write_text(json.dumps({
             "added_rtt_ms": delay, "guest_to_host": relay.transferred[0],
             "host_to_guest": relay.transferred[1], "samples_epoch_up_down": history,
+            "downlink_kib": options.slow_downlink_kib, "downlink_window_s": options.slow_downlink_window,
+            "throttled_bytes": relay.throttled_bytes,
         }), encoding="utf-8")
     finally:
         await relay.close()
@@ -238,6 +268,9 @@ def main():
     cli.add_argument("--sizes", type=int, choices=DENSITIES, nargs="+", default=[128])
     cli.add_argument("--scenes", choices=SCENES, nargs="+", default=["split"])
     cli.add_argument("--delay", type=int, nargs="+", default=[0], help="Added total RTT in ms")
+    cli.add_argument("--slow-downlink-kib", type=int, default=0, help="Host-to-guest limit in KiB/s")
+    cli.add_argument("--slow-downlink-window", type=float, nargs=2, metavar=("START", "END"),
+                     help="Apply the downlink limit between these seconds after the relay connects")
     cli.add_argument("--repeats", type=int, default=1)
     cli.add_argument("--seconds", type=float, default=30)
     cli.add_argument("--warmup", type=float, default=10)
@@ -254,6 +287,10 @@ def main():
         cli.error("--label must be alphanumeric with optional hyphens and underscores")
     if opts.repeats < 1 or min(opts.seconds, opts.warmup, *opts.delay) < 0:
         cli.error("Durations/delay must be nonnegative, with at least one repeat")
+    if opts.slow_downlink_kib < 0 or bool(opts.slow_downlink_kib) != bool(opts.slow_downlink_window):
+        cli.error("Use a positive --slow-downlink-kib together with --slow-downlink-window")
+    if opts.slow_downlink_window and not 0 <= opts.slow_downlink_window[0] < opts.slow_downlink_window[1]:
+        cli.error("Downlink window requires 0 <= START < END")
     if not budget(ROOT, 128 * 1024**2)["allowed"]:
         cli.error("Example output budget exceeded")
     godot = game_godot(opts.godot_exe)
