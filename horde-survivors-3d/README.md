@@ -81,5 +81,15 @@ python -B benchmark/lan.py guest --connect 192.168.3.10 --label first-host
 python -B benchmark/report_lan.py ../out/horde-survivors-3d/lan-first-host-host ../out/horde-survivors-3d/lan-swapped-host
 ```
 
+### 上行限速拾取回放
+
+在 `horde-survivors-3d` 目录执行以下命令。两端使用 C 档压力模式并持续推进 1024 怪，夹具关闭自动攻击，在客机脚下放置 240 颗经验石，并丢弃客机收到的第一份升级回执。relay 从连接后的第 6 至 12 秒仅限制客机到房主方向，附加 40 ms RTT。
+
+```powershell
+python -B benchmark/run.py --cases pickup-queue --modes C --sizes 1024 --delay 40 --slow-uplink-kib 8 --slow-uplink-window 6 12 --label pickup-uplink
+```
+
+双端 JSON 以各自的单调时钟记录实际放置时刻 `stones_placed_at_ms`，以及从放置到首颗和全部收齐的 `first_pickup_ms` 和 `all_pickups_ms`。同一份报告含升级确认时延、队列峰值和结算记录。`tcp.json` 分别报告两条方向的限速转发量。比较无上行限速的基线时，省略两个 `--slow-uplink` 参数并更换输出标签。
+
 - [任务与验收](../task/horde-survivors-3d/执行状态.md)
 - [士兵来源与许可](assets/sources.json)
